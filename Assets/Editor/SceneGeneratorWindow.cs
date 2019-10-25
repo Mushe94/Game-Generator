@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class LevelGeneratorWindow : EditorWindow
+public class SceneGeneratorWindow : EditorWindow
 {
     public static void OpenWindow()
 	{
-		GetWindow<LevelGeneratorWindow>();
+		GetWindow<SceneGeneratorWindow>();
 	}
 }

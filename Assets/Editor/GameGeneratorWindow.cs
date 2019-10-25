@@ -15,11 +15,11 @@ public class GameGeneratorWindow : EditorWindow
 	{
 		if (GUILayout.Button("Player configuration"))
 		{
-			SceneGeneratorWindow.OpenWindow();
+			PlayerGeneratorWindow.OpenWindow();
 		}
 		if (GUILayout.Button("Scene generator"))
 		{
-			LevelGeneratorWindow.OpenWindow();
+			SceneGeneratorWindow.OpenWindow();
 		}
 		if (GUILayout.Button("Game Mode configuration"))
 		{
