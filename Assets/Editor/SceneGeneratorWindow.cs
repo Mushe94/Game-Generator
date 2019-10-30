@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -7,7 +6,8 @@ public class SceneGeneratorWindow : EditorWindow
 {
 	private int sceneWidth;
 	private int sceneDepth;
-	private List<Vector3> cubesPosition = new List<Vector3>();
+	private int repeats;
+	private readonly List<Vector3> cubesPosition = new List<Vector3>();
 
     public static void OpenWindow()
 	{
@@ -18,45 +18,67 @@ public class SceneGeneratorWindow : EditorWindow
 	{
 		sceneDepth = EditorGUILayout.IntField("Depth", sceneDepth);
 		sceneWidth = EditorGUILayout.IntField("Width", sceneWidth);
+		repeats = EditorGUILayout.IntField("Repeat pattern", repeats);
 		if (GUILayout.Button("Generate"))
 		{
-			for (int i = 0; i < sceneWidth; i++)
+			cubesPosition.Clear();
+			if (repeats == 0)
 			{
-				for (int j = 0; j < sceneDepth; j++)
+				repeats = 1;
+			}
+			foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Generated"))
+			{
+				cubesPosition.Add(gameObject.transform.position);
+			}
+			for (int h = 0; h < repeats; h++)
+			{
+				for (int i = 0; i < sceneWidth; i++)
 				{
-					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-					cube.transform.position = Vector3.zero;
-					Vector3 randomVector = RandomVector();
-					cube.transform.rotation = Quaternion.LookRotation(randomVector);
-					Vector3 finalCubePosition = cube.transform.position + cube.transform.forward * j;
-					foreach (var item in cubesPosition)
+					for (int j = 0; j < sceneDepth; j++)
 					{
-						Debug.Log("I have " + item);
-					}
-					Debug.Log("and " + finalCubePosition);
-					bool repeat = false;
-					do
-					{
-						foreach (var item in cubesPosition)
+						GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+						cube.tag = "Generated";
+						cube.transform.position = Vector3.zero;
+						int numberOfTries = 0;
+						Vector3 randomVector = RandomVector(ref numberOfTries);
+						cube.transform.rotation = Quaternion.LookRotation(randomVector);
+						Vector3 finalCubePosition = cube.transform.position + cube.transform.forward * (j + numberOfTries);
+						cube.transform.position = finalCubePosition;
+						for (int k = 0; k < i; k++)
 						{
-							if (item == finalCubePosition)
-							{
-								randomVector = RandomVector();
-								cube.transform.rotation = Quaternion.LookRotation(randomVector);
-								finalCubePosition = cube.transform.position + cube.transform.forward * j;
-								Debug.Log("asd");
-								repeat = true;
-							}
+							randomVector = RandomVector(ref numberOfTries);
+							cube.transform.rotation = Quaternion.LookRotation(randomVector);
+							finalCubePosition = cube.transform.position + cube.transform.forward;
+							cube.transform.position = finalCubePosition;
 						}
-					} while (repeat);
-					cube.transform.position = finalCubePosition;
-					cubesPosition.Add(finalCubePosition);
+						bool repeat = false;
+						do
+						{
+							foreach (Vector3 cubePosition in cubesPosition)
+							{
+								if (cubePosition == finalCubePosition)
+								{
+									randomVector = RandomVector(ref numberOfTries);
+									cube.transform.rotation = Quaternion.LookRotation(randomVector);
+									finalCubePosition = cube.transform.position + cube.transform.forward * (j + numberOfTries);
+									cube.transform.position = finalCubePosition;
+									repeat = true;
+									break;
+								} else
+								{
+									repeat = false;
+								}
+							}
+						} while (repeat);
+						cube.transform.position = finalCubePosition;
+						cubesPosition.Add(finalCubePosition);
+					}
 				}
 			}
 		}
 	}
 
-	private Vector3 RandomVector()
+	private Vector3 RandomVector(ref int tries)
 	{
 		Vector3 randomVector = default;
 		int random = Random.Range(0, 4);
@@ -75,6 +97,7 @@ public class SceneGeneratorWindow : EditorWindow
 				randomVector = Vector3.right;
 				break;
 		}
+		tries++;
 		return randomVector;
 	}
 }
