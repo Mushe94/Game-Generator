@@ -6,16 +6,18 @@ using UnityEditor.SceneManagement;
 
 public class SceneGeneratorWindow : EditorWindow
 {
-	private int sceneWidth;
-	private int sceneDepth;
-	private int repeats;
-	private bool useSprayPattern;
-	private int numberOfLevels;
+	private int sceneWidth = 1;
+	private int sceneDepth = 1;
+	private int repeats = 1;
+	private bool useSprayPattern = false;
+	private int numberOfLevels = 1;
 	private readonly List<Vector3> cubesPosition = new List<Vector3>();
 
     public static void OpenWindow()
 	{
-		GetWindow<SceneGeneratorWindow>("Scene Generator", true);
+		SceneGeneratorWindow sceneGeneratorWindow = GetWindow<SceneGeneratorWindow>("Scene Generator", true);
+		sceneGeneratorWindow.minSize = new Vector2(200f, 100f);
+		sceneGeneratorWindow.maxSize = new Vector2(200f, 100f);
 	}
 
 	private void OnGUI()
@@ -24,16 +26,29 @@ public class SceneGeneratorWindow : EditorWindow
 		sceneDepth = EditorGUILayout.IntField("Depth", sceneDepth);
 		sceneWidth = EditorGUILayout.IntField("Width", sceneWidth);
 		useSprayPattern = EditorGUILayout.Toggle("Spray Pattern", useSprayPattern);
-		numberOfLevels = EditorGUILayout.IntField("Number of Levels", numberOfLevels);
 		if (useSprayPattern)
 		{
 			repeats = EditorGUILayout.IntField("Repeat pattern", repeats);
 		}
+		numberOfLevels = EditorGUILayout.IntField("Number of Levels", numberOfLevels);
+		EditorGUILayout.Space();
 		if (GUILayout.Button("Generate"))
 		{
 			if (numberOfLevels == 0)
 			{
 				numberOfLevels = 1;
+			}
+			if (sceneDepth == 0)
+			{
+				sceneDepth = 1;
+			}
+			if (sceneWidth == 0)
+			{
+				sceneWidth = 1;
+			}
+			if (repeats == 0)
+			{
+				repeats = 1;
 			}
 			for (int g = 0; g < numberOfLevels; g++)
 			{
@@ -43,10 +58,6 @@ public class SceneGeneratorWindow : EditorWindow
 				EditorSceneManager.SaveScene(scene, path, false);
 				EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
 				cubesPosition.Clear();
-				if (repeats == 0)
-				{
-					repeats = 1;
-				}
 				foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Generated"))
 				{
 					cubesPosition.Add(gameObject.transform.position);
