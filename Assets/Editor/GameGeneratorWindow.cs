@@ -27,7 +27,7 @@ public class GameGeneratorWindow : EditorWindow
 		}
 		if (GUILayout.Button("Level configuration"))
 		{
-			LevelConfigurationWindow.OpenWindow();
+            LevelConfiguration.OpenWindow();
 		}
 	}
 }
