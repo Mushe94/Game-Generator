@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 public class GameGeneratorWindow : EditorWindow
@@ -8,7 +6,7 @@ public class GameGeneratorWindow : EditorWindow
 	[MenuItem("Engines Team/Game Generator #g")]
     public static void OpenWindow()
 	{
-		GetWindow<GameGeneratorWindow>();
+		GetWindow<GameGeneratorWindow>("Game Generator", true);
 	}
 
 	private void OnGUI()
