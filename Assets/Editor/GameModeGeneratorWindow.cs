@@ -35,10 +35,18 @@ public class GameModeGeneratorWindow : EditorWindow
     string selectedMode;
     string selectedPers;
     string selectedDim;
+    string selectedObj;
 
     bool gameModePage;
     bool propertiesPage;
 
+    bool toPointPlat;
+    bool killeveryOnePlat;
+    bool endLevelEnd;
+    bool continueEnd;
+    bool survTime
+
+    float howmanyLevels;
     private void OnEnable()
     {
         titlestyle = new GUIStyle();
@@ -112,7 +120,12 @@ public class GameModeGeneratorWindow : EditorWindow
         }
         if(propertiesPage)
         {
+            PropertiesGame();
 
+            if(GUILayout.Button("Create Scriptable"))
+            {
+                CreateScriptable();
+            }
         }
     }
 
@@ -120,6 +133,105 @@ public class GameModeGeneratorWindow : EditorWindow
     void PropertiesGame()
     {
         EditorGUILayout.LabelField("Properties", titlestyle);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        if(chosePlatformer)
+        {
+            EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            endLevelEnd = EditorGUILayout.Toggle("Kill Everyone", endLevelEnd);
+            endLevelEnd = EditorGUILayout.Toggle("Get fom A point to B point", !endLevelEnd);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            howmanyLevels = EditorGUILayout.FloatField("Levels: ",howmanyLevels);
+
+            if (endLevelEnd) selectedObj = "Win by Finishing Level";
+            if (!endLevelEnd) selectedObj = "Play until Death";
+
+        }
+
+        if (choseSurvival)
+        {
+            EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            survTime = EditorGUILayout.Toggle("Kill Everyone", survTime);
+            survTime = EditorGUILayout.Toggle("Survive at a giving Time", !survTime);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            howmanyLevels = EditorGUILayout.FloatField("Levels: ", howmanyLevels);
+
+            if (survTime) selectedObj = "Win surviving at a giving time";
+            if (!survTime) selectedObj = "Win Killing everyone";
+
+        }
+
+        if (choseEndless)
+        {
+            EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            killeveryOnePlat = EditorGUILayout.Toggle("End Level", killeveryOnePlat);
+            killeveryOnePlat = EditorGUILayout.Toggle("Continue until Death", !killeveryOnePlat);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            howmanyLevels = EditorGUILayout.FloatField("Levels: ", howmanyLevels);
+
+            if (killeveryOnePlat) selectedObj = "KILL EVERYONE";
+            if (!killeveryOnePlat) selectedObj = "GET TO OBJECTIVE";
+        }
+    }
+
+    void CreateScriptable()
+    {
+        if (EditorUtility.DisplayDialog("Attention", "Is This information Okay? " + "\n" + "\n" + selectedPers + "\n" + selectedMode + "\n" + selectedObj + "\n" + "LEVELS: " + howmanyLevels, "Yes", "No"))
+        {
+            Debug.Log("SI");
+            var a = ScriptableObject.CreateInstance<GamemodeProperties>();
+            a.endlessMode = choseEndless;
+            a.platformMode = chosePlatformer;
+            a.survivalMode = choseSurvival;
+
+            a.isoPers = choseISO;
+            a.tpPers = choseTP;
+            a.tdPers = choseTD;
+            a.horPers = choseSIDE;
+            var b = AssetDatabase.GenerateUniqueAssetPath("Assets/Level_Properties.asset");
+
+            gameModePage = true;
+            propertiesPage = false;
+
+            AssetDatabase.CreateAsset(a, b);
+
+            AssetDatabase.SaveAssets();
+        }
     }
 
     void ChooseTypeOfGame()
@@ -295,20 +407,11 @@ public class GameModeGeneratorWindow : EditorWindow
 
               if(  EditorUtility.DisplayDialog("Attention", "Is This information Okay? " + "\n" +"\n"+selectedPers + "\n" + selectedMode,"Yes","No"))
               {
-                    Debug.Log("SI");
-                    var a = ScriptableObject.CreateInstance<GamemodeProperties>();
-                    a.endlessMode = choseEndless;
-                    a.platformMode = chosePlatformer;
-                    a.survivalMode = choseSurvival;
+              
+                    gameModePage = false;
+                    propertiesPage = true;
+                    Repaint();
 
-                    a.isoPers = choseISO;
-                    a.tpPers = choseTP;
-                    a.tdPers = choseTD;
-                    a.horPers = choseSIDE;
-                    var b =AssetDatabase.GenerateUniqueAssetPath("Assets/Level_Properties.asset");
-                    AssetDatabase.CreateAsset(a, b  );
-
-                    AssetDatabase.SaveAssets();
               }
                
               
