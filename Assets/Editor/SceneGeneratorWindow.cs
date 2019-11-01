@@ -16,13 +16,41 @@ public class SceneGeneratorWindow : EditorWindow
     public static void OpenWindow()
 	{
 		SceneGeneratorWindow sceneGeneratorWindow = GetWindow<SceneGeneratorWindow>("Scene Generator", true);
-		sceneGeneratorWindow.minSize = new Vector2(200f, 100f);
-		sceneGeneratorWindow.maxSize = new Vector2(200f, 100f);
+		sceneGeneratorWindow.minSize = new Vector2(200f, 150f);
+		sceneGeneratorWindow.maxSize = new Vector2(200f, 150f);
 	}
 
 	private void OnGUI()
 	{
 		EditorGUI.BeginChangeCheck();
+		if (numberOfLevels <= 0)
+		{
+			numberOfLevels = 1;
+		} else if (numberOfLevels > 10)
+		{
+			numberOfLevels = 10;
+		}
+		if (sceneDepth <= 0)
+		{
+			sceneDepth = 1;
+		} else if (sceneDepth > 10)
+		{
+			sceneDepth = 10;
+		}
+		if (sceneWidth <= 0)
+		{
+			sceneWidth = 1;
+		} else if (sceneWidth > 10)
+		{
+			sceneWidth = 10;
+		}
+		if (repeats <= 0)
+		{
+			repeats = 1;
+		} else if (repeats > 10)
+		{
+			repeats = 10;
+		}
 		sceneDepth = EditorGUILayout.IntField("Depth", sceneDepth);
 		sceneWidth = EditorGUILayout.IntField("Width", sceneWidth);
 		useSprayPattern = EditorGUILayout.Toggle("Spray Pattern", useSprayPattern);
@@ -32,24 +60,14 @@ public class SceneGeneratorWindow : EditorWindow
 		}
 		numberOfLevels = EditorGUILayout.IntField("Number of Levels", numberOfLevels);
 		EditorGUILayout.Space();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
+		EditorGUILayout.Space();
 		if (GUILayout.Button("Generate"))
 		{
-			if (numberOfLevels == 0)
-			{
-				numberOfLevels = 1;
-			}
-			if (sceneDepth == 0)
-			{
-				sceneDepth = 1;
-			}
-			if (sceneWidth == 0)
-			{
-				sceneWidth = 1;
-			}
-			if (repeats == 0)
-			{
-				repeats = 1;
-			}
 			for (int g = 0; g < numberOfLevels; g++)
 			{
 				Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
