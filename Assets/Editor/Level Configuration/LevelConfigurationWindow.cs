@@ -31,8 +31,8 @@ public class LevelConfigurationWindow : EditorWindow
 
     public static void OpenWindow()
     {
-        GetWindow<LevelConfigurationWindow>("Level Configuration", true);
-        
+        LevelConfigurationWindow levelConfigurationWindow = GetWindow<LevelConfigurationWindow>("Level Configuration", true);
+        levelConfigurationWindow.minSize = new Vector2(400f, 300f);
     }
 
     private void OnEnable()
@@ -60,21 +60,38 @@ public class LevelConfigurationWindow : EditorWindow
 
         if (scriptable == null)
         {
-            scriptable = Resources.Load<LevelConfigurationData>("LevelConfigurationData");
+            if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
+            {
+                AssetDatabase.CreateFolder("Assets/Resources", "Data");
+                Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
+                AssetDatabase.Refresh();
+            }
+            scriptable = Resources.Load<LevelConfigurationData>("Data/LevelConfigurationData");
+            if (scriptable == null)
+            {
+                LevelConfigurationData data = CreateInstance<LevelConfigurationData>();
+                AssetDatabase.CreateAsset(data, "Assets/Resources/Data/LevelConfigurationData.asset");
+                scriptable = data;
+            }
         }
 
 
         if (scriptable.emptyCreated.Count > 0)
         {
+            List<string> names = new List<string>();
             foreach (var name in scriptable.emptyCreated)
             {
                 var b = GameObject.Find(name);
                 if (b == null)
                 {
-                    scriptable.emptyCreated.Remove(name);
+                    names.Add(name);
                 }
             }
-            //spawnedEmptyName = scriptable.emptyCreated;
+            foreach (var item in names)
+            {
+                scriptable.emptyCreated.Remove(item);
+            }
+            spawnedEmptyName = scriptable.emptyCreated;
         }
 
     }
@@ -106,7 +123,7 @@ public class LevelConfigurationWindow : EditorWindow
 
                     if (c)
                     {
-                        GameObject a = scriptable.gameObjectsPreview[i];                                         
+                        GameObject a = scriptable.gameObjectsPreview[i];
 
                         PrefabUtility.InstantiatePrefab(a);
                     }
@@ -163,7 +180,7 @@ public class LevelConfigurationWindow : EditorWindow
 
         EditorGUILayout.LabelField("PowerUps", _secondaryStyle);
         EditorGUILayout.Space();
-        
+
         powerupsIndex = EditorGUILayout.Popup("Power Ups Types", powerupsIndex, allPowerups);
         currentPowerup = allPowerups[powerupsIndex];
 
@@ -207,7 +224,7 @@ public class LevelConfigurationWindow : EditorWindow
                         PrefabUtility.InstantiatePrefab(a);
 
                         spawnedEmptyName.Add(a.name);
-                      
+
                     }
 
                 }

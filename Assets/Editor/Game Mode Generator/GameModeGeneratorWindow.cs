@@ -88,7 +88,8 @@ public class GameModeGeneratorWindow : EditorWindow
 
 	public static void OpenWindow()
 	{
-		GetWindow<GameModeGeneratorWindow>("Game Mode Generator", true);
+        GameModeGeneratorWindow gameModeGeneratorWindow = GetWindow<GameModeGeneratorWindow>("Game Mode Generator", true);
+        gameModeGeneratorWindow.minSize = new Vector2(400f, 500f);
 	}
 
 	private void OnGUI()
@@ -212,9 +213,8 @@ public class GameModeGeneratorWindow : EditorWindow
 
 	void CreateScriptable()
 	{
-		if (EditorUtility.DisplayDialog("Attention", "Is This information Okay? " + "\n" + "\n" + selectedPers + "\n" + selectedMode + "\n" + selectedObj + "\n" + "LEVELS: " + howManyLevels, "Yes", "No"))
+		if (EditorUtility.DisplayDialog("Attention", "Is this information ok? " + "\n" + "\n" + selectedPers + "\n" + selectedMode + "\n" + selectedObj + "\n" + "LEVELS: " + howManyLevels, "Yes", "No"))
 		{
-			Debug.Log("SI");
 			var a = CreateInstance<GameModeProperties>();
 			a.endlessMode = choseEndless;
 			a.platformMode = chosePlatformer;
@@ -224,7 +224,14 @@ public class GameModeGeneratorWindow : EditorWindow
 			a.tpPers = choseTP;
 			a.tdPers = choseTD;
 			a.horPers = choseSIDE;
-			var b = AssetDatabase.GenerateUniqueAssetPath("Assets/Level_Properties.asset");
+
+            if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
+            {
+                AssetDatabase.CreateFolder("Assets/Resources", "Data");
+                Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
+                AssetDatabase.Refresh();
+            }
+            var b = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Data/Level_Properties.asset");
 
 			gameModePage = true;
 			propertiesPage = false;

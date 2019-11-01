@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06ef4c1698e1b804d93af5751b5193fd, type: 3}
   m_Name: LevelConfigurationData
   m_EditorClassIdentifier: 
-  gameobjectsPreview:
+  gameObjectsPreview:
   - {fileID: 1913731954022693159, guid: 10e1a782697bfaa4ba29a69b27d15b98, type: 3}
   - {fileID: 5002854131447248113, guid: 889ba83ca928efc489db2c663300092a, type: 3}
-  - {fileID: 1844079386192527839, guid: 637c8318314a49e4fb65c1296713a513, type: 3}
   - {fileID: 3326868820851516131, guid: 2804a1b9a23919649a985d29514d5cc2, type: 3}
-  emptyCreated:
-  - PowerUp - Damage
-  - PowerUp - Damage (1)
+  - {fileID: 1844079386192527839, guid: 637c8318314a49e4fb65c1296713a513, type: 3}
+  emptyCreated: []

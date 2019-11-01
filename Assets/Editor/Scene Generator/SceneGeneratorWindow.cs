@@ -72,7 +72,13 @@ public class SceneGeneratorWindow : EditorWindow
 			{
 				Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
 				string path = "Assets/Scenes/Level.unity";
-				path = AssetDatabase.GenerateUniqueAssetPath(path);
+                if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
+                {
+                    AssetDatabase.CreateFolder("Assets", "Scenes");
+                    Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
+                    AssetDatabase.Refresh();
+                }
+                path = AssetDatabase.GenerateUniqueAssetPath(path);
 				EditorSceneManager.SaveScene(scene, path, false);
 				EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
 				cubesPosition.Clear();

@@ -8,5 +8,5 @@ public class LevelConfigurationData : ScriptableObject
     [Header("Spawnable Objects")]
     public List<GameObject> gameObjectsPreview;
 
-    public List<string> emptyCreated;
+    public List<string> emptyCreated = new List<string>();
 }

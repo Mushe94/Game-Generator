@@ -8,7 +8,7 @@ public class PlayerGeneratorWindow : EditorWindow
     static PlayerGeneratorWindow w;
     static GUIStyle mystyle;
 
-    PlayerScriptable PlayerScriptable;
+    PlayerScriptable playerScriptable;
     public string[] DeathType = { "1 touch to dead", "can't die", "When life=0" };
     public int deadIndex;
 
@@ -36,37 +36,43 @@ public class PlayerGeneratorWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
 
-        PlayerScriptable = (PlayerScriptable)EditorGUILayout.ObjectField("Scriptable Player", PlayerScriptable, typeof(PlayerScriptable), false);
+        playerScriptable = (PlayerScriptable)EditorGUILayout.ObjectField("Scriptable Player", playerScriptable, typeof(PlayerScriptable), false);
 
-        if (PlayerScriptable != null)
+        if (playerScriptable != null)
         {
             EditorGUILayout.Space();
-            PlayerScriptable.name = EditorGUILayout.TextField("Name", PlayerScriptable.name);
-            PlayerScriptable.Life = EditorGUILayout.FloatField("Life", PlayerScriptable.Life);
-            PlayerScriptable.speed = EditorGUILayout.FloatField("Speed", PlayerScriptable.speed);
+            playerScriptable.name = EditorGUILayout.TextField("Name", playerScriptable.name);
+            playerScriptable.Life = EditorGUILayout.FloatField("Life", playerScriptable.Life);
+            playerScriptable.speed = EditorGUILayout.FloatField("Speed", playerScriptable.speed);
             EditorGUILayout.Space();
 
-            PlayerScriptable.VerticalMovement = EditorGUILayout.Toggle("Vertical Movement", PlayerScriptable.VerticalMovement);
-            PlayerScriptable.HorizontalMovement = EditorGUILayout.Toggle("Horizontal Movement", PlayerScriptable.HorizontalMovement);
+            playerScriptable.VerticalMovement = EditorGUILayout.Toggle("Vertical Movement", playerScriptable.VerticalMovement);
+            playerScriptable.HorizontalMovement = EditorGUILayout.Toggle("Horizontal Movement", playerScriptable.HorizontalMovement);
 
 
-            if (!PlayerScriptable.VerticalMovement)
+            if (!playerScriptable.VerticalMovement)
             {
 
-                PlayerScriptable.CanJump = EditorGUILayout.Toggle("Can Jump", PlayerScriptable.CanJump);
-                if (PlayerScriptable.CanJump)
+                playerScriptable.CanJump = EditorGUILayout.Toggle("Can Jump", playerScriptable.CanJump);
+                if (playerScriptable.CanJump)
                 {
-                    PlayerScriptable.jumpForce = EditorGUILayout.FloatField("Jump Force", PlayerScriptable.jumpForce);
+                    playerScriptable.jumpForce = EditorGUILayout.FloatField("Jump Force", playerScriptable.jumpForce);
                 }
             }
 
             deadIndex = EditorGUILayout.Popup("Death Types", deadIndex, DeathType);
-            PlayerScriptable.currentDeath = deadIndex;
-            EditorUtility.SetDirty(PlayerScriptable); //para que se guarde los cambios
-            if (GUILayout.Button("Crear Scriptable Player"))
+            playerScriptable.currentDeath = deadIndex;
+            EditorUtility.SetDirty(playerScriptable); //para que se guarde los cambios
+            if (GUILayout.Button("Create Scriptable Player"))
             {
-                var scriptable = ScriptableObject.CreateInstance<PlayerScriptable>();
-                var path = "Assets/Carpeta Gonza/" + PlayerScriptable.name + ".asset";
+                var scriptable = CreateInstance<PlayerScriptable>();
+                if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
+                {
+                    AssetDatabase.CreateFolder("Assets/Resources", "Data");
+                    Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
+                    AssetDatabase.Refresh();
+                }
+                var path = "Assets/Resources/Data/" + playerScriptable.name + ".asset";
 
                 path = AssetDatabase.GenerateUniqueAssetPath(path);
 
@@ -74,12 +80,12 @@ public class PlayerGeneratorWindow : EditorWindow
 
                 Save();
             }
-            if (GUILayout.Button("Crear Player Prefab")) //Ejemplo de como crear un prefab
+            if (GUILayout.Button("Create Player Prefab")) //Ejemplo de como crear un prefab
             {
                 var myObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 var script=myObject.AddComponent<Player>();
-                script.data = PlayerScriptable;
-                string path = "Assets/Prefabs/" + PlayerScriptable.name + ".prefab";
+                script.data = playerScriptable;
+                string path = "Assets/Prefabs/" + playerScriptable.name + ".prefab";
 
                 PrefabUtility.SaveAsPrefabAssetAndConnect(myObject, path, InteractionMode.AutomatedAction);
 
@@ -89,10 +95,10 @@ public class PlayerGeneratorWindow : EditorWindow
         }
         else
         {
-            if (GUILayout.Button("Nuevo Scriptable Player"))
+            if (GUILayout.Button("New Scriptable Player"))
             {
-                PlayerScriptable = new PlayerScriptable();
-                PlayerScriptable.name = "New Player";
+                playerScriptable = CreateInstance<PlayerScriptable>();
+                playerScriptable.name = "New Player";
             }
         }
     }
