@@ -11,13 +11,19 @@ public class SceneGeneratorWindow : EditorWindow
 	private int repeats = 1;
 	private bool useSprayPattern = false;
 	private int numberOfLevels = 1;
+	private string sceneName = "";
+	private Color previewColor = Color.white;
+	private bool showColor;
 	private readonly List<Vector3> cubesPosition = new List<Vector3>();
+	private static SceneGeneratorWindow sceneGeneratorWindow;
+	private int numberOfObjects = 0;
+	private readonly List<GameObject> gameObjects = new List<GameObject>();
 
-    public static void OpenWindow()
+	public static void OpenWindow()
 	{
-		SceneGeneratorWindow sceneGeneratorWindow = GetWindow<SceneGeneratorWindow>("Scene Generator", true);
-		sceneGeneratorWindow.minSize = new Vector2(200f, 150f);
-		sceneGeneratorWindow.maxSize = new Vector2(200f, 150f);
+		sceneGeneratorWindow = GetWindow<SceneGeneratorWindow>("Scene Generator", true);
+		sceneGeneratorWindow.minSize = new Vector2(200f, 170f);
+		sceneGeneratorWindow.maxSize = new Vector2(300f, 350f);
 	}
 
 	private void OnGUI()
@@ -53,12 +59,60 @@ public class SceneGeneratorWindow : EditorWindow
 		}
 		sceneDepth = EditorGUILayout.IntField("Depth", sceneDepth);
 		sceneWidth = EditorGUILayout.IntField("Width", sceneWidth);
-		useSprayPattern = EditorGUILayout.Toggle("Spray Pattern", useSprayPattern);
+		useSprayPattern = EditorGUILayout.Toggle("Use Spray Pattern?", useSprayPattern);
 		if (useSprayPattern)
 		{
 			repeats = EditorGUILayout.IntField("Repeat pattern", repeats);
 		}
 		numberOfLevels = EditorGUILayout.IntField("Number of Levels", numberOfLevels);
+		sceneName = EditorGUILayout.TextField("Scenes Name", sceneName);
+		EditorGUILayout.Space();
+		if (sceneDepth > 0 && sceneWidth > 0)
+		{
+			Texture2D texture = new Texture2D(sceneWidth * 10, sceneDepth * 10);
+			for (int y = 0; y < texture.width; y++)
+			{
+				for (int x = 0; x < texture.height; x++)
+				{
+					texture.SetPixel(y, x, previewColor);
+				}
+			}
+			texture.Apply();
+			GUIStyle guiStyle = new GUIStyle
+			{
+				alignment = TextAnchor.MiddleCenter
+			};
+			if (GUILayout.Button(texture, guiStyle))
+			{
+				showColor = !showColor;				
+			}
+			if (showColor)
+			{
+				EditorGUILayout.BeginHorizontal();
+				EditorGUILayout.Space();
+				previewColor = EditorGUILayout.ColorField(previewColor);
+				EditorGUILayout.EndHorizontal();
+			}
+		}
+		EditorGUILayout.Space();
+		if (numberOfObjects < 0)
+		{
+			numberOfObjects = 0;
+		} else if (numberOfObjects >= 25)
+		{
+			numberOfObjects = 25;
+		}
+		numberOfObjects = EditorGUILayout.IntField("Number of Objects", numberOfObjects);
+		for (int i = 0; i < numberOfObjects; i++)
+		{
+			if (i >= gameObjects.Count)
+			{
+				gameObjects.Add(null);
+			}
+			gameObjects[i] = (GameObject)EditorGUILayout.ObjectField("Model or Prefab", gameObjects[i], typeof(GameObject), false);
+		}
+		float windowFullSize = 10f * numberOfObjects;
+		sceneGeneratorWindow.maxSize = new Vector2(sceneGeneratorWindow.maxSize.x, sceneGeneratorWindow.maxSize.y + windowFullSize);
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
@@ -71,38 +125,53 @@ public class SceneGeneratorWindow : EditorWindow
 			for (int g = 0; g < numberOfLevels; g++)
 			{
 				Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Additive);
-				string path = "Assets/Scenes/Level.unity";
-                if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
-                {
-                    AssetDatabase.CreateFolder("Assets", "Scenes");
-                    Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
-                    AssetDatabase.Refresh();
-                }
-                path = AssetDatabase.GenerateUniqueAssetPath(path);
+				if (sceneName == "")
+				{
+					sceneName = "Level";
+				}
+				string path = "Assets/Scenes/" + sceneName + ".unity";
+				if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
+				{
+					AssetDatabase.CreateFolder("Assets", "Scenes");
+					Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
+					AssetDatabase.Refresh();
+				}
+				path = AssetDatabase.GenerateUniqueAssetPath(path);
 				EditorSceneManager.SaveScene(scene, path, false);
 				EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
 				cubesPosition.Clear();
-				foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Generated"))
+				for (int i = gameObjects.Count - 1; i >= 0; i--)
 				{
-					cubesPosition.Add(gameObject.transform.position);
+					if (gameObjects[i] == null)
+					{
+						gameObjects.Remove(gameObjects[i]);
+					}
 				}
-				Vector3 finalCubePosition;
+				numberOfObjects = gameObjects.Count;
+				Vector3 finalObjectPosition;
 				for (int i = 0; i < sceneWidth; i++)
 				{
 					for (int j = 0; j < sceneWidth; j++)
 					{
-						GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-						cube.tag = "Generated";
-						cube.transform.position = Vector3.zero;
-						finalCubePosition = cube.transform.position + cube.transform.forward * j;
-						finalCubePosition += cube.transform.right * i;
-						if (cubesPosition.Contains(finalCubePosition))
+						GameObject gameObject;
+						if (numberOfObjects == 0)
 						{
-							DestroyImmediate(cube);
+							gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
 						} else
 						{
-							cube.transform.position = finalCubePosition;
-							cubesPosition.Add(finalCubePosition);
+							gameObject = gameObjects[Random.Range(0, gameObjects.Count)];
+							gameObject = Instantiate(gameObject);
+						}
+						gameObject.transform.position = Vector3.zero;
+						finalObjectPosition = gameObject.transform.position + gameObject.transform.forward * j;
+						finalObjectPosition += gameObject.transform.right * i;
+						if (cubesPosition.Contains(finalObjectPosition))
+						{
+							DestroyImmediate(gameObject);
+						} else
+						{
+							gameObject.transform.position = finalObjectPosition;
+							cubesPosition.Add(finalObjectPosition);
 						}
 					}
 				}
@@ -114,33 +183,39 @@ public class SceneGeneratorWindow : EditorWindow
 						{
 							for (int j = 0; j < sceneDepth; j++)
 							{
-								GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-								cube.tag = "Generated";
-								cube.transform.position = Vector3.zero;
+								GameObject gameObject;
+								if (numberOfObjects == 0)
+								{
+									gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+								} else
+								{
+									gameObject = gameObjects[Random.Range(0, gameObjects.Count)];
+									gameObject = Instantiate(gameObject);
+								}
+								gameObject.transform.position = Vector3.zero;
 								int numberOfTries = 0;
 								Vector3 randomVector = RandomVector(ref numberOfTries);
-								cube.transform.rotation = Quaternion.LookRotation(randomVector);
-								finalCubePosition = cube.transform.position + cube.transform.forward * (j + numberOfTries);
-								cube.transform.position = finalCubePosition;
-			
+								gameObject.transform.rotation = Quaternion.LookRotation(randomVector);
+								finalObjectPosition = gameObject.transform.position + gameObject.transform.forward * (j + numberOfTries);
+								gameObject.transform.position = finalObjectPosition;			
 								for (int k = 0; k < i; k++)
 								{
 									randomVector = RandomVector(ref numberOfTries);
-									cube.transform.rotation = Quaternion.LookRotation(randomVector);
-									finalCubePosition = cube.transform.position + cube.transform.forward;
-									cube.transform.position = finalCubePosition;
+									gameObject.transform.rotation = Quaternion.LookRotation(randomVector);
+									finalObjectPosition = gameObject.transform.position + gameObject.transform.forward;
+									gameObject.transform.position = finalObjectPosition;
 								}
 								bool repeat = false;
 								do
 								{
 									foreach (Vector3 cubePosition in cubesPosition)
 									{
-										if (cubePosition == finalCubePosition)
+										if (cubePosition == finalObjectPosition)
 										{
 											randomVector = RandomVector(ref numberOfTries);
-											cube.transform.rotation = Quaternion.LookRotation(randomVector);
-											finalCubePosition = cube.transform.position + cube.transform.forward * (j + numberOfTries);
-											cube.transform.position = finalCubePosition;
+											gameObject.transform.rotation = Quaternion.LookRotation(randomVector);
+											finalObjectPosition = gameObject.transform.position + gameObject.transform.forward * (j + numberOfTries);
+											gameObject.transform.position = finalObjectPosition;
 											repeat = true;
 											break;
 										} else
@@ -149,8 +224,8 @@ public class SceneGeneratorWindow : EditorWindow
 										}
 									}
 								} while (repeat);
-								cube.transform.position = finalCubePosition;
-								cubesPosition.Add(finalCubePosition);
+								gameObject.transform.position = finalObjectPosition;
+								cubesPosition.Add(finalObjectPosition);
 							}
 						}
 					}

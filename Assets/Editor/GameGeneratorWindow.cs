@@ -23,21 +23,21 @@ public class GameGeneratorWindow : EditorWindow
 		EditorGUILayout.LabelField("Game Generator", bannerStyle);
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
-		if (GUILayout.Button("Player configuration"))
-		{
-			PlayerGeneratorWindow.OpenWindow();
-		}
-		if (GUILayout.Button("Scene generator"))
-		{
-			SceneGeneratorWindow.OpenWindow();
-		}
 		if (GUILayout.Button("Game Mode configuration"))
 		{
 			GameModeGeneratorWindow.OpenWindow();
 		}
+		if (GUILayout.Button("Player configuration"))
+		{
+			PlayerGeneratorWindow.OpenWindow();
+		}
 		if (GUILayout.Button("Level configuration"))
 		{
             LevelConfigurationWindow.OpenWindow();
+		}
+		if (GUILayout.Button("Scene generator"))
+		{
+			SceneGeneratorWindow.OpenWindow();
 		}
 	}
 }
