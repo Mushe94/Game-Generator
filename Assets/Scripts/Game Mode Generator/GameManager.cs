@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
      float currentY;
      float currentX;
 
-    public float enemies;
+    public int enemies;
    
     float minY, maxY;
 
@@ -23,9 +23,20 @@ public class GameManager : MonoBehaviour
     private float timer;
     public float amountOfTime;
     public Scene[] myscenes;
+    public int amountScenes;
     private void Awake()
     {
-        SceneManager.LoadScene(myscenes[1].name);
+        if (scriptable.objEndless == ObjectiveEndless.BYTIME || scriptable.objSurvival == ObjectiveSurvival.BYTIME)
+        {
+           
+        timer = amountOfTime;
+
+        }
+        else
+        {
+            timer = 0;
+        }
+        timeText.text = "" + amountOfTime;
         if (scriptable.pers == Perspective.side)
         {
             offset = new Vector3(0, 0, -10);
@@ -87,11 +98,16 @@ public class GameManager : MonoBehaviour
         currentY -= Input.GetAxis("Mouse Y");
         currentX += Input.GetAxis("Mouse X");
         Mathf.Clamp(currentY, minY, maxY);
-        if(scriptable.gm == GameMode.survival)
+        if(scriptable.objEndless == ObjectiveEndless.BYTIME || scriptable.objSurvival == ObjectiveSurvival.BYTIME)
         {
             timer -= Time.deltaTime;
 
+        }else
+        {
+            timer += Time.deltaTime;
         }
+
+        timeText.text = timer+ "";
     }
 
     IEnumerator LoadmyScene()

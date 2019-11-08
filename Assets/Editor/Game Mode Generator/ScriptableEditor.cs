@@ -31,7 +31,8 @@ public class ScriptableEditor : Editor
         {
         EditorGUILayout.LabelField("Objective ");
             EditorGUILayout.EnumPopup(_target.objEndless);
-        }else if(_target.gm == GameMode.survival)
+        }
+        else if(_target.gm == GameMode.survival)
         {
         EditorGUILayout.LabelField("Objective ");
             EditorGUILayout.EnumPopup(_target.objSurvival);

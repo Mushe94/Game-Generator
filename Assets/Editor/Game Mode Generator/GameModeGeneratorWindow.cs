@@ -261,8 +261,8 @@ public class GameModeGeneratorWindow : EditorWindow
 			if(scriptable == null) scriptable = CreateInstance<GameModeProperties>();
 
             scriptable.amountOfLevels = howManyLevels;
-            
-      
+
+            Debug.Log(scriptable.pers);
 
             if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
             {
@@ -282,18 +282,22 @@ public class GameModeGeneratorWindow : EditorWindow
 
             for (int i = 0; i < howManyLevels; i++)
             {
-                AssetDatabase.CopyAsset("Assets/Scenes/MatiTest.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+                if(scriptable.pers == Perspective.side) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestSide.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+                if(scriptable.pers == Perspective.top) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+                if(scriptable.pers == Perspective.third) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+                if(scriptable.pers == Perspective.iso) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
               
             }
 			AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
-            //AssetDatabase.LoadAssetAtPath("Assets/Resources/Prefabs/Level0.unity", typeof(SceneAsset));
             EditorSceneManager.OpenScene("Assets/Resources/Prefabs/Level0.unity");
+
+           
 
             var manager = FindObjectOfType<GameManager>();
             manager.scriptable = scriptable;
             manager.myscenes = new UnityEngine.SceneManagement.Scene[howManyLevels];
+            manager.amountScenes = howManyLevels;
             for (int i = 0; i < howManyLevels; i++)
             {
                 manager.myscenes[i] = EditorSceneManager.GetSceneByPath("Assets/Resources/Prefabs/Level" + i + ".unity");
@@ -440,7 +444,8 @@ public class GameModeGeneratorWindow : EditorWindow
             choseTD = false;
             choseSIDE = true;
             selectedPers = "SIDE-SCROLLER";
-		}
+            Debug.Log(scriptable.pers);
+        }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
 
@@ -460,7 +465,7 @@ public class GameModeGeneratorWindow : EditorWindow
             choseTD = true;
             choseSIDE = false;
             selectedPers = "TOP DOWN";
-
+            Debug.Log(scriptable.pers);
         }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
@@ -478,8 +483,8 @@ public class GameModeGeneratorWindow : EditorWindow
 
 				if (EditorUtility.DisplayDialog("Attention", "Is this information ok? " + "\n" + "\n" + selectedPers + "\n" + selectedMode, "Yes", "No"))
 				{
-
-					gameModePage = false;
+                    Debug.Log(scriptable.pers);
+                    gameModePage = false;
 					propertiesPage = true;
 					Repaint();
 
