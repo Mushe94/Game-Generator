@@ -35,8 +35,6 @@ public class GameModeGeneratorWindow : EditorWindow
 	string selectedDim;
 	string selectedObj;
 
-    
-
 	bool gameModePage;
 	bool propertiesPage;
 
@@ -76,8 +74,6 @@ public class GameModeGeneratorWindow : EditorWindow
 			alignment = TextAnchor.MiddleCenter
 		};
 
-		var a = AssetDatabase.GetAllAssetPaths();
-
 		survExample = (Texture2D)Resources.Load("Survival_Example");
 		endlessExample = (Texture2D)Resources.Load("Endless_Example");
 		platExample = (Texture2D)Resources.Load("Platformer_Example");
@@ -106,7 +102,6 @@ public class GameModeGeneratorWindow : EditorWindow
 
 	private void OnGUI()
 	{
-
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
 		if (gameModePage)
@@ -262,8 +257,6 @@ public class GameModeGeneratorWindow : EditorWindow
 
             scriptable.amountOfLevels = howManyLevels;
 
-            Debug.Log(scriptable.pers);
-
             if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
             {
                 AssetDatabase.CreateFolder("Assets/Resources", "Data");
@@ -271,13 +264,13 @@ public class GameModeGeneratorWindow : EditorWindow
                 AssetDatabase.Refresh();
         
             }
-            var b = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Data/Level_Properties.asset");
+            var path = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Data/Game Mode Properties/Level_Properties.asset");
 
              
 
 			gameModePage = true;
 			propertiesPage = false;
-            AssetDatabase.CreateAsset(scriptable, b);
+            AssetDatabase.CreateAsset(scriptable, path);
 
 
             for (int i = 0; i < howManyLevels; i++)
@@ -300,8 +293,7 @@ public class GameModeGeneratorWindow : EditorWindow
             manager.amountScenes = howManyLevels;
             for (int i = 0; i < howManyLevels; i++)
             {
-                manager.myscenes[i] = EditorSceneManager.GetSceneByPath("Assets/Resources/Prefabs/Level" + i + ".unity");
-               
+                manager.myscenes[i] = UnityEngine.SceneManagement.SceneManager.GetSceneByPath("Assets/Resources/Prefabs/Level" + i + ".unity");
             }
             scriptable = null;
 		}
@@ -483,19 +475,14 @@ public class GameModeGeneratorWindow : EditorWindow
 
 				if (EditorUtility.DisplayDialog("Attention", "Is this information ok? " + "\n" + "\n" + selectedPers + "\n" + selectedMode, "Yes", "No"))
 				{
-                    Debug.Log(scriptable.pers);
                     gameModePage = false;
 					propertiesPage = true;
 					Repaint();
-
                 }
-
-
 			}
 			else
 			{
-				EditorUtility.DisplayDialog("Oops!", "There's an option you haven't selected.",
-			 "Alright");
+				EditorUtility.DisplayDialog("Oops!", "There's an option you haven't selected.", "Alright");
 			}
 		}
 	}

@@ -79,8 +79,8 @@ public class LevelConfigurationWindow : EditorWindow
             }
         }
 
-        getList = true;        
-        getBool = true;        
+        getList = true;
+        getBool = true;
     }
 
     private void OnGUI()
@@ -93,18 +93,16 @@ public class LevelConfigurationWindow : EditorWindow
 
         if (scriptable != null)
         {
-            if (scriptable.gameObjectsPreview == null)
+            scriptable.gameObjectsPreview.Clear();
+            if (scriptable.gameObjectsPreview.Count == 0)
             {
-                scriptable.gameObjectsPreview = new List<GameObject>();
-                if (scriptable.gameObjectsPreview.Count == 0)
+                foreach (var item in Resources.LoadAll<GameObject>("Prefabs/Level Configuration"))
                 {
-                    foreach (var item in Resources.LoadAll<GameObject>("Prefabs/Level Configuration"))
-                    {
-                        scriptable.gameObjectsPreview.Add(item);
-                    }
+                    scriptable.gameObjectsPreview.Add(item);
                 }
-
             }
+
+
 
             if (getBool)
             {
@@ -161,9 +159,9 @@ public class LevelConfigurationWindow : EditorWindow
             path = AssetDatabase.GenerateUniqueAssetPath(path);
 
             AssetDatabase.CreateAsset(data, path);
-
-
         }
+
+        EditorGUILayout.LabelField("Data Path: Assets/Resources/Data");
     }
     private void FindScriptableList()
     {
@@ -430,20 +428,19 @@ public class LevelConfigurationWindow : EditorWindow
                         {
                             var child = obj.GetComponent<GetChild>();
                             child.child.SetActive(true);
-                            child.child.hideFlags = HideFlags.None;                            
+                            child.child.hideFlags = HideFlags.None;
                             var childRend = obj.GetComponentInChildren<Renderer>();
                             var childMesh = obj.GetComponentInChildren<MeshFilter>();
 
                             if (childRend != null)
                             {
-                                child.child.transform.localScale = platformPreview.transform.localScale;
+                                child.child.transform.localScale = powerUpPreview.transform.localScale;
                                 childMesh.sharedMesh = powerUpPreview.GetComponent<MeshFilter>().sharedMesh;
 
                                 var mat = new Material(Shader.Find("TransparencyShader"));
                                 mat.SetColor("_Color", Color.cyan);
                                 mat.SetFloat("_Opacity", 0.71f);
                                 mat.SetFloat("_Emission", -0.17f);
-
                                 childRend.sharedMaterial = mat;
                                 child.child.hideFlags = HideFlags.HideInHierarchy;
                             }
@@ -528,7 +525,15 @@ public class LevelConfigurationWindow : EditorWindow
                         var childComponent = obj.GetComponent<GetChild>();
                         if (childComponent == null)
                         {
-                            obj.AddComponent<GetChild>();
+                            GetChild getChild = obj.AddComponent<GetChild>();
+                            if (powerUpPreview != null)
+                            {
+                                getChild.spawn = powerUpPreview;
+                            }
+                            else
+                            {
+                                getChild.spawn = new GameObject();
+                            }
                         }
                     }
                 }

@@ -13,13 +13,13 @@ public class Player : MonoBehaviour
     public float damage;
     public float jumpForce;
     public int deathType;
-    public MeshRenderer plMat;
+    private MeshRenderer plMat;
     private void OnEnable()
     {
         if (data != null)
         {
 
-            plMat = gameObject.GetComponent<MeshRenderer>();
+            plMat = GetComponent<MeshRenderer>();
             Life = data.Life;
             speed = data.speed;
             damage = data.damage;
@@ -40,18 +40,21 @@ public class Player : MonoBehaviour
             if (data.MeleAttack)
             {
                 gameObject.AddComponent<MeleAttack>();
-
+            }
+            foreach (Material material in Resources.LoadAll<Material>("Prefabs/"))
+            {
+                if (material.name == "PlayerMat")
+                {
+                    plMat.material = material;
+                }
             }
         }
-      
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        plMat.material = Resources.Load<Material>("/Prefabs/PlayerMat.mat");
         initialPos = transform.transform.transform.transform.transform.transform.transform.transform.transform.transform.transform.transform.position;
-       
     }
 
     private void Update()

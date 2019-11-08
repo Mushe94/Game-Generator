@@ -9,11 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06ef4c1698e1b804d93af5751b5193fd, type: 3}
-  m_Name: LevelConfigurationData
+  m_Script: {fileID: 11500000, guid: b175380ec0cab0843834312dce1ebb3d, type: 3}
+  m_Name: aa
   m_EditorClassIdentifier: 
-  gameObjectsPreview: []
-  emptyCreated: []
-  previewPowerUp: 1
-  previewPlatform: 0
-  previewEnemies: 0
+  Name: 
+  Life: 1
+  speed: 1
+  damage: 1
+  jumpForce: 1
+  CanJump: 0
+  VerticalMovement: 0
+  HorizontalMovement: 0
+  MeleAttack: 0
+  currentDeath: 0

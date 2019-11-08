@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteInEditMode]
 public class GetChild : MonoBehaviour
 {
+    [HideInInspector]
     public GameObject spawn;
-
+    [HideInInspector]
     public GameObject child;
 
     private void Update()
@@ -17,8 +16,14 @@ public class GetChild : MonoBehaviour
             b.name = "";
             b.transform.position = transform.position;
             b.transform.parent = transform;
-            b.AddComponent<MeshFilter>();
-            b.AddComponent<MeshRenderer>();
+            if (!b.GetComponent<MeshFilter>())
+            {
+                b.AddComponent<MeshFilter>();
+            }
+            if (!b.GetComponent<MeshRenderer>())
+            {
+                b.AddComponent<MeshRenderer>();
+            }
             child = b;
             b.hideFlags = HideFlags.HideInHierarchy;
         }

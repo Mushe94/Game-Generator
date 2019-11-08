@@ -9,7 +9,7 @@ public class PlayerGeneratorWindow : EditorWindow
     static GUIStyle mystyle;
 
     PlayerScriptable playerScriptable;
-    public string[] DeathType = { "1 touch to dead", "can't die", "When life=0" };
+    public string[] DeathType = { "1 hit to die", "Can't die", "When Life = 0" };
     public int deadIndex;
 
     public static void OpenWindow()
@@ -83,7 +83,7 @@ public class PlayerGeneratorWindow : EditorWindow
 
                 Save();
             }
-            if (GUILayout.Button("Save has Player Prefab")) 
+            if (GUILayout.Button("Save as Player Prefab")) 
             {
                 var myObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 var script = myObject.AddComponent<Player>();

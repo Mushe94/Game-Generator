@@ -162,6 +162,14 @@ public class SceneGeneratorWindow : EditorWindow
 							gameObject = gameObjects[Random.Range(0, gameObjects.Count)];
 							gameObject = Instantiate(gameObject);
 						}
+                        if (previewColor != Color.white)
+                        {
+                            MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
+                            if (meshRenderer != null)
+                            {
+                                meshRenderer.sharedMaterial.color = previewColor;
+                            }
+                        }
 						gameObject.transform.position = Vector3.zero;
 						finalObjectPosition = gameObject.transform.position + gameObject.transform.forward * j;
 						finalObjectPosition += gameObject.transform.right * i;
@@ -192,7 +200,15 @@ public class SceneGeneratorWindow : EditorWindow
 									gameObject = gameObjects[Random.Range(0, gameObjects.Count)];
 									gameObject = Instantiate(gameObject);
 								}
-								gameObject.transform.position = Vector3.zero;
+                                if (previewColor != Color.white)
+                                {
+                                    MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
+                                    if (meshRenderer != null)
+                                    {
+                                        meshRenderer.sharedMaterial.color = previewColor;
+                                    }
+                                }
+                                gameObject.transform.position = Vector3.zero;
 								int numberOfTries = 0;
 								Vector3 randomVector = RandomVector(ref numberOfTries);
 								gameObject.transform.rotation = Quaternion.LookRotation(randomVector);

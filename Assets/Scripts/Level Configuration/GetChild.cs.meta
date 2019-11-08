@@ -4,7 +4,8 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - spawn: {fileID: 3124868171400293218, guid: 34721da13ac736c41ab653441a0616c3, type: 3}
+  - spawn: {instanceID: 0}
+  - child: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

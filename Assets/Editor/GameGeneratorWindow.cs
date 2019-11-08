@@ -3,6 +3,8 @@ using UnityEditor;
 
 public class GameGeneratorWindow : EditorWindow
 {
+    private bool scenesEnabled;
+
 	[MenuItem("Engines Team/Game Generator #g")]
     public static void OpenWindow()
 	{
@@ -13,6 +15,12 @@ public class GameGeneratorWindow : EditorWindow
 
 	private void OnGUI()
 	{
+        int numberOfItems = 0;
+        foreach (GameModeProperties gameModeProperties in Resources.LoadAll("Data/Game Mode Properties/"))
+        {
+            numberOfItems++;
+        }
+        scenesEnabled = numberOfItems > 0;
 		EditorGUILayout.Space();
 		GUIStyle bannerStyle = new GUIStyle
 		{
@@ -27,6 +35,11 @@ public class GameGeneratorWindow : EditorWindow
 		{
 			GameModeGeneratorWindow.OpenWindow();
 		}
+        EditorGUI.BeginDisabledGroup(!scenesEnabled);
+		if (GUILayout.Button("Scene generator"))
+		{
+			SceneGeneratorWindow.OpenWindow();
+		}
 		if (GUILayout.Button("Player configuration"))
 		{
 			PlayerGeneratorWindow.OpenWindow();
@@ -35,9 +48,6 @@ public class GameGeneratorWindow : EditorWindow
 		{
             LevelConfigurationWindow.OpenWindow();
 		}
-		if (GUILayout.Button("Scene generator"))
-		{
-			SceneGeneratorWindow.OpenWindow();
-		}
+        EditorGUI.EndDisabledGroup();
 	}
 }
