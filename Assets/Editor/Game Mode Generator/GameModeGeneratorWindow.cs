@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using UnityEditor.SceneManagement;
+using Object = UnityEngine.Object;
 
 public class GameModeGeneratorWindow : EditorWindow
 {
@@ -34,6 +35,8 @@ public class GameModeGeneratorWindow : EditorWindow
 	string selectedDim;
 	string selectedObj;
 
+    
+
 	bool gameModePage;
 	bool propertiesPage;
 
@@ -44,14 +47,20 @@ public class GameModeGeneratorWindow : EditorWindow
 	bool survTime;
 
 	int howManyLevels;
+
+    GameModeProperties scriptable;
+    public List<SceneAsset> myscenes;
+
 	private void OnEnable()
-	{
-		titlestyle = new GUIStyle
-		{
-			fontSize = 20,
-			fontStyle = FontStyle.Bold,
-			alignment = TextAnchor.MiddleCenter
-		};
+  	{
+        myscenes = new List<SceneAsset>();
+        titlestyle = new GUIStyle
+        {
+            fontSize = 20,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter
+
+        };
 
 		subtitlestyle = new GUIStyle
 		{
@@ -84,6 +93,9 @@ public class GameModeGeneratorWindow : EditorWindow
 
 		gameModePage = true;
 		propertiesPage = false;
+
+
+        
 	}
 
 	public static void OpenWindow()
@@ -109,10 +121,7 @@ public class GameModeGeneratorWindow : EditorWindow
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
-			//ChooseDimensions();
-
-			//EditorGUILayout.Space();
-			//EditorGUILayout.Space();
+		
 
 			ChoosePerspective();
 
@@ -139,33 +148,45 @@ public class GameModeGeneratorWindow : EditorWindow
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
 
-		if (chosePlatformer)
-		{
-			EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
-			EditorGUILayout.Space();
-			EditorGUILayout.Space();
+        if (chosePlatformer)
+        {
+            if (scriptable != null) scriptable.gm = GameMode.platform;
+            else scriptable = CreateInstance<GameModeProperties>();
+            EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
-			endLevelEnd = EditorGUILayout.Toggle("Kill Everyone", endLevelEnd);
-			endLevelEnd = EditorGUILayout.Toggle("Get fom A point to B point", !endLevelEnd);
+            endLevelEnd = EditorGUILayout.Toggle("Collect Coins", endLevelEnd);
+            endLevelEnd = EditorGUILayout.Toggle("Get fom A point to B point", !endLevelEnd);
 
-			EditorGUILayout.Space();
-			EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
-			EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+            EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
 
-			EditorGUILayout.Space();
-			EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
-			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
+            howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
-			if (endLevelEnd) selectedObj = "Win by Finishing Level";
-			if (!endLevelEnd) selectedObj = "Play until Death";
+            if (endLevelEnd)
+            {
+                selectedObj = "Win by Finishing Level";
+                scriptable.objPlatform = ObjectivePlatformer.GetToPointB;
+            }
+            if (!endLevelEnd)
+            {
+                selectedObj = "Collect Coins";
+                scriptable.objPlatform = ObjectivePlatformer.CollectCoins;
+            }
 
 		}
 
 		if (choseSurvival)
 		{
-			EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
+            if (scriptable != null) scriptable.gm = GameMode.survival;
+            else scriptable = CreateInstance<GameModeProperties>();
+            EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
@@ -182,19 +203,31 @@ public class GameModeGeneratorWindow : EditorWindow
 
 			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
-			if (survTime) selectedObj = "Win surviving at a giving time";
-			if (!survTime) selectedObj = "Win Killing everyone";
+            if (survTime)
+            {
+                selectedObj = "Win surviving at a giving time";
+                scriptable.objSurvival = ObjectiveSurvival.BYTIME;
+            }
+            if (!survTime)
+            {
+                selectedObj = "Win Killing everyone";
+                scriptable.objSurvival = ObjectiveSurvival.BYKILLING;
+            }
+
+            
 
 		}
 
 		if (choseEndless)
 		{
-			EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
+            if (scriptable != null) scriptable.gm = GameMode.endless;
+            else scriptable = CreateInstance<GameModeProperties>();
+            EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
-			killEveryOnePlat = EditorGUILayout.Toggle("End Level", killEveryOnePlat);
-			killEveryOnePlat = EditorGUILayout.Toggle("Continue until Death", !killEveryOnePlat);
+			killEveryOnePlat = EditorGUILayout.Toggle("Based on Time", killEveryOnePlat);
+			killEveryOnePlat = EditorGUILayout.Toggle("Based on Points", !killEveryOnePlat);
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
@@ -206,42 +239,70 @@ public class GameModeGeneratorWindow : EditorWindow
 
 			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
-			if (killEveryOnePlat) selectedObj = "KILL EVERYONE";
-			if (!killEveryOnePlat) selectedObj = "GET TO OBJECTIVE";
-		}
+            if (!killEveryOnePlat)
+            {
+                selectedObj = "Based on Time";
+                scriptable.objEndless = ObjectiveEndless.BYTIME;
+            }
+            if (killEveryOnePlat)
+            {
+                selectedObj = "Based on Points";
+                scriptable.objEndless = ObjectiveEndless.BYPOINTS;
+            }
+   
+        }
 	}
 
 	void CreateScriptable()
 	{
 		if (EditorUtility.DisplayDialog("Attention", "Is this information ok? " + "\n" + "\n" + selectedPers + "\n" + selectedMode + "\n" + selectedObj + "\n" + "LEVELS: " + howManyLevels, "Yes", "No"))
 		{
-			var a = CreateInstance<GameModeProperties>();
-			a.endlessMode = choseEndless;
-			a.platformMode = chosePlatformer;
-			a.survivalMode = choseSurvival;
 
-			a.isoPers = choseISO;
-			a.tpPers = choseTP;
-			a.tdPers = choseTD;
-			a.horPers = choseSIDE;
+			if(scriptable == null) scriptable = CreateInstance<GameModeProperties>();
+
+            scriptable.amountOfLevels = howManyLevels;
+            
+      
 
             if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
             {
                 AssetDatabase.CreateFolder("Assets/Resources", "Data");
                 Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
                 AssetDatabase.Refresh();
+        
             }
             var b = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Data/Level_Properties.asset");
 
+             
+
 			gameModePage = true;
 			propertiesPage = false;
+            AssetDatabase.CreateAsset(scriptable, b);
 
-			AssetDatabase.CreateAsset(a, b);
 
+            for (int i = 0; i < howManyLevels; i++)
+            {
+                AssetDatabase.CopyAsset("Assets/Scenes/MatiTest.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+              
+            }
 			AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            //AssetDatabase.LoadAssetAtPath("Assets/Resources/Prefabs/Level0.unity", typeof(SceneAsset));
+            EditorSceneManager.OpenScene("Assets/Resources/Prefabs/Level0.unity");
+
+            var manager = FindObjectOfType<GameManager>();
+            manager.scriptable = scriptable;
+            manager.myscenes = new UnityEngine.SceneManagement.Scene[howManyLevels];
+            for (int i = 0; i < howManyLevels; i++)
+            {
+                manager.myscenes[i] = EditorSceneManager.GetSceneByPath("Assets/Resources/Prefabs/Level" + i + ".unity");
+               
+            }
+            scriptable = null;
 		}
 	}
-
+   
 	void ChooseTypeOfGame()
 	{
 
@@ -261,7 +322,14 @@ public class GameModeGeneratorWindow : EditorWindow
 			choseEndless = true;
 			choseSurvival = false;
 			chosePlatformer = false;
-			selectedMode = "ENDLESS";
+            if (scriptable != null) scriptable.gm = GameMode.endless;
+            else
+            {
+                scriptable = CreateInstance<GameModeProperties>();
+
+            }
+    
+            selectedMode = "ENDLESS";
 			Repaint();
 		}
 		EditorGUI.EndDisabledGroup();
@@ -277,8 +345,11 @@ public class GameModeGeneratorWindow : EditorWindow
 			choseEndless = false;
 			choseSurvival = false;
 			chosePlatformer = true;
-			selectedMode = "PLATFORMER";
-		}
+            if (scriptable != null) scriptable.gm = GameMode.platform;
+            else scriptable = CreateInstance<GameModeProperties>();
+            selectedMode = "PLATFORMER";
+
+        }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
 
@@ -292,8 +363,11 @@ public class GameModeGeneratorWindow : EditorWindow
 			choseEndless = false;
 			choseSurvival = true;
 			chosePlatformer = false;
-			selectedMode = "SURVIVAL";
-		}
+            if (scriptable != null) scriptable.gm = GameMode.survival;
+            else scriptable = CreateInstance<GameModeProperties>();
+            selectedMode = "SURVIVAL";
+
+        }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
 
@@ -317,13 +391,15 @@ public class GameModeGeneratorWindow : EditorWindow
 		EditorGUI.BeginDisabledGroup(choseISO);
 		if (GUI.Button(GUILayoutUtility.GetRect(50, 50, 50, 50), "Isometric"))
 		{
-			choseISO = true;
-			choseTP = false;
-			choseTD = false;
-			choseSIDE = false;
-			selectedPers = "ISOMETRIC";
+            if (scriptable != null) scriptable.pers = Perspective.iso;
+            else scriptable = CreateInstance<GameModeProperties>();
+            choseISO = true;
+            choseTP = false;
+            choseTD = false;
+            choseSIDE = false;
+            selectedPers = "ISOMETRIC";
 
-		}
+        }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
 
@@ -337,12 +413,15 @@ public class GameModeGeneratorWindow : EditorWindow
 		EditorGUI.BeginDisabledGroup(choseTP);
 		if (GUI.Button(GUILayoutUtility.GetRect(50, 50, 50, 50), "Third Person"))
 		{
-			choseISO = false;
-			choseTP = true;
-			choseTD = false;
-			choseSIDE = false;
-			selectedPers = "THIRD PERSON";
-		}
+            if (scriptable != null) scriptable.pers = Perspective.third;
+            else scriptable = CreateInstance<GameModeProperties>();
+            choseISO = false;
+            choseTP = true;
+            choseTD = false;
+            choseSIDE = false;
+            selectedPers = "THIRD PERSON";
+
+        }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
 
@@ -354,11 +433,13 @@ public class GameModeGeneratorWindow : EditorWindow
 		EditorGUI.BeginDisabledGroup(choseSIDE);
 		if (GUI.Button(GUILayoutUtility.GetRect(50, 50, 50, 50), "Side-Scroller"))
 		{
-			choseISO = false;
-			choseTP = false;
-			choseTD = false;
-			choseSIDE = true;
-			selectedPers = "SIDE-SCROLLER";
+            if (scriptable != null) scriptable.pers = Perspective.side;
+            else scriptable = CreateInstance<GameModeProperties>();
+            choseISO = false;
+            choseTP = false;
+            choseTD = false;
+            choseSIDE = true;
+            selectedPers = "SIDE-SCROLLER";
 		}
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
@@ -372,12 +453,15 @@ public class GameModeGeneratorWindow : EditorWindow
 		EditorGUI.BeginDisabledGroup(choseTD);
 		if (GUI.Button(GUILayoutUtility.GetRect(50, 50, 50, 50), "Top Down"))
 		{
-			choseISO = false;
-			choseTP = false;
-			choseTD = true;
-			choseSIDE = false;
-			selectedPers = "TOP DOWN";
-		}
+            if (scriptable != null) scriptable.pers = Perspective.top;
+            else scriptable = CreateInstance<GameModeProperties>();
+            choseISO = false;
+            choseTP = false;
+            choseTD = true;
+            choseSIDE = false;
+            selectedPers = "TOP DOWN";
+
+        }
 		EditorGUI.EndDisabledGroup();
 		EditorGUILayout.EndVertical();
 
@@ -399,7 +483,7 @@ public class GameModeGeneratorWindow : EditorWindow
 					propertiesPage = true;
 					Repaint();
 
-				}
+                }
 
 
 			}
@@ -410,4 +494,6 @@ public class GameModeGeneratorWindow : EditorWindow
 			}
 		}
 	}
+
 }
+

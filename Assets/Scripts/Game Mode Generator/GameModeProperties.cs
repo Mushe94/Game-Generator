@@ -2,13 +2,47 @@
 
 public class GameModeProperties : ScriptableObject
 {
-    public bool survivalMode;
-    public bool platformMode;
-    public bool endlessMode;
+   
 
 
-    public bool isoPers;
-    public bool tpPers;
-    public bool tdPers;
-    public bool horPers;
+    
+    public GameMode gm;
+    public Perspective pers;
+    public ObjectiveEndless objEndless;
+    public ObjectivePlatformer objPlatform;
+    public ObjectiveSurvival objSurvival;
+    public int amountOfLevels;
+    public float limitTime;
+
 }
+public enum Perspective
+{
+    side,
+    iso,
+    third,
+    top
+}
+public enum GameMode
+{
+    platform,
+    endless,
+    survival
+}
+
+public enum ObjectivePlatformer
+{
+    GetToPointB,
+    CollectCoins
+}
+public enum ObjectiveEndless
+{
+    BYTIME,
+    BYPOINTS
+}
+public enum ObjectiveSurvival
+{
+    BYTIME,
+    BYKILLING
+}
+
+
