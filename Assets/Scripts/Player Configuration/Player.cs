@@ -37,6 +37,11 @@ public class Player : MonoBehaviour
             {
                 gameObject.AddComponent<VerticalMovement>();
             }
+            if (data.MeleAttack)
+            {
+                gameObject.AddComponent<MeleAttack>();
+
+            }
         }
       
     }

@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: New Player
   m_EditorClassIdentifier: 
   Name: 
-  Life: 1
+  Life: 9.1
   speed: 1
   damage: 1
   jumpForce: 1
   CanJump: 0
   VerticalMovement: 0
   HorizontalMovement: 0
+  MeleAttack: 0
   currentDeath: 0
