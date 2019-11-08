@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class Player : MonoBehaviour
 {
     public PlayerScriptable data;
@@ -12,28 +13,45 @@ public class Player : MonoBehaviour
     public float damage;
     public float jumpForce;
     public int deathType;
-
-    private void Awake()
+    public MeshRenderer plMat;
+    private void OnEnable()
     {
-        gameObject.AddComponent<CapsuleCollider>();
-        Life = data.Life;
-        speed = data.speed;
-        damage = data.damage;
-        jumpForce = data.jumpForce;
-        deathType = data.currentDeath;
+        if (data != null)
+        {
+
+            plMat = gameObject.GetComponent<MeshRenderer>();
+            Life = data.Life;
+            speed = data.speed;
+            damage = data.damage;
+            jumpForce = data.jumpForce;
+            deathType = data.currentDeath;
+            if (data.HorizontalMovement)
+            {
+                gameObject.AddComponent<HorizontalMovement>();
+            }
+            if (data.CanJump && !data.VerticalMovement)
+            {
+                gameObject.AddComponent<Jump>();
+            }
+            if (data.VerticalMovement)
+            {
+                gameObject.AddComponent<VerticalMovement>();
+            }
+            if (data.MeleAttack)
+            {
+                gameObject.AddComponent<MeleAttack>();
+
+            }
+        }
+      
     }
+
     // Start is called before the first frame update
     void Start()
     {
+        plMat.material = Resources.Load<Material>("/Prefabs/PlayerMat.mat");
         initialPos = transform.transform.transform.transform.transform.transform.transform.transform.transform.transform.transform.transform.position;
-        if (data.CanJump&&!data.VerticalMovement)
-        {
-            gameObject.AddComponent<Jump>();
-        }
-        if (data.VerticalMovement)
-        {
-
-        }
+       
     }
 
     private void Update()
@@ -47,12 +65,15 @@ public class Player : MonoBehaviour
     {
         switch (deathType)
         {
-            case 0: Debug.Log("se cago muriendo");
+            case 0:
+                Debug.Log("se cago muriendo");
                 break;
 
-            case 1:Debug.Log("No puede morir");
+            case 1:
+                Debug.Log("No puede morir");
                 break;
-            case 2:Debug.Log("Restar vida igual al damage del enemigo");
+            case 2:
+                Debug.Log("Restar vida igual al damage del enemigo");
                 break;
         }
     }
@@ -60,7 +81,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if(collision.gameObject.layer==11)//layer 11=enemigos hasta que decidamos
+        if (collision.gameObject.layer == 11)//layer 11=enemigos hasta que decidamos
         {
             Death();
         }

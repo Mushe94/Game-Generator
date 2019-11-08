@@ -14,7 +14,7 @@ public class PlayerScriptable : ScriptableObject
     public bool CanJump;
     public bool VerticalMovement;
     public bool HorizontalMovement;
-
+    public bool MeleAttack;
 
     public int currentDeath;
     //faltan ataques

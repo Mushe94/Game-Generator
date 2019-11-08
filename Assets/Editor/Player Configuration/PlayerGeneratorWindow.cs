@@ -21,7 +21,7 @@ public class PlayerGeneratorWindow : EditorWindow
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleCenter
         };
-        
+
     }
 
     private void OnGUI()
@@ -31,12 +31,14 @@ public class PlayerGeneratorWindow : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Space();
-       // EditorGUILayout.LabelField("Edit Custom Player", mystyle);
+        // EditorGUILayout.LabelField("Edit Custom Player", mystyle);
         EditorGUILayout.Space();
         EditorGUILayout.EndHorizontal();
 
-
         playerScriptable = (PlayerScriptable)EditorGUILayout.ObjectField("Scriptable Player", playerScriptable, typeof(PlayerScriptable), false);
+       
+        EditSelectedPlayer();
+
 
         if (playerScriptable != null)
         {
@@ -49,6 +51,7 @@ public class PlayerGeneratorWindow : EditorWindow
             playerScriptable.VerticalMovement = EditorGUILayout.Toggle("Vertical Movement", playerScriptable.VerticalMovement);
             playerScriptable.HorizontalMovement = EditorGUILayout.Toggle("Horizontal Movement", playerScriptable.HorizontalMovement);
 
+            playerScriptable.MeleAttack = EditorGUILayout.Toggle("Melee Attack", playerScriptable.MeleAttack);
 
             if (!playerScriptable.VerticalMovement)
             {
@@ -80,12 +83,13 @@ public class PlayerGeneratorWindow : EditorWindow
 
                 Save();
             }
-            if (GUILayout.Button("Create Player Prefab")) //Ejemplo de como crear un prefab
+            if (GUILayout.Button("Save has Player Prefab")) 
             {
                 var myObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                var script=myObject.AddComponent<Player>();
+                var script = myObject.AddComponent<Player>();
                 script.data = playerScriptable;
-                string path = "Assets/Prefabs/" + playerScriptable.name + ".prefab";
+                string path = "Assets/Resources/Prefabs/" + playerScriptable.name + ".prefab";
+                Debug.Log("the prefab was saved in " + path);
 
                 PrefabUtility.SaveAsPrefabAssetAndConnect(myObject, path, InteractionMode.AutomatedAction);
 
@@ -95,12 +99,29 @@ public class PlayerGeneratorWindow : EditorWindow
         }
         else
         {
-            if (GUILayout.Button("New Scriptable Player"))
+            if (GUILayout.Button("Save Scriptable Player"))
             {
-                playerScriptable = CreateInstance<PlayerScriptable>();
-                playerScriptable.name = "New Player";
+                EditNewPlayer();
             }
         }
+    }
+
+    void EditSelectedPlayer()
+    {
+        if (Selection.activeGameObject != null && Selection.activeGameObject.tag == "Player")
+        {
+            if (GUILayout.Button("Edit Selected Player"))
+            {
+                var activePlayer = Selection.activeGameObject.GetComponent<Player>();
+                playerScriptable = activePlayer.data;
+            }
+           
+        }
+    } 
+    void EditNewPlayer()
+    {
+        playerScriptable = CreateInstance<PlayerScriptable>();
+        playerScriptable.name = "New Player";
     }
 
     private void Save()

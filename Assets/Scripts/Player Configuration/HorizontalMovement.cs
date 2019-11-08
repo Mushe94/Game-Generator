@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class HorizontalMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Player _pl;
+    private void Awake()
     {
-        
+        _pl = GetComponent<Player>();
     }
-
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += Vector3.right * _pl.speed * Time.deltaTime;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.position += Vector3.left * _pl.speed * Time.deltaTime;
+        }
     }
 }
