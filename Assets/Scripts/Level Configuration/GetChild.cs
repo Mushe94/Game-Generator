@@ -3,7 +3,6 @@
 [ExecuteInEditMode]
 public class GetChild : MonoBehaviour
 {
-    [HideInInspector]
     public GameObject spawn;
     [HideInInspector]
     public GameObject child;
