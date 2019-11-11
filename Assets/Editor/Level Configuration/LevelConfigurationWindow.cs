@@ -12,10 +12,14 @@ public class LevelConfigurationWindow : EditorWindow
     private LevelConfigurationData scriptable;
     private GameObject powerUp;
     private GameObject platform;
+    private GameObject enemy;
+    private GameObject player;
     private string powerUpName;
     private string platformName;
+    private string enemyName;
+    private string playerName;
 
-    private int[] powerUpsCopies = { 0, 0, 0 };
+    private int[] copies = { 0, 0, 0, 0, 0, 0 };
     private string[] allPowerups = { "Damage", "Health", "Speed" };
     private string currentPowerup;
     private int powerupsIndex;
@@ -28,14 +32,24 @@ public class LevelConfigurationWindow : EditorWindow
     private string[] allEmptyPlatforms;
     private string currentEmptyPlatform;
     private int emptyIndexPlatform;
+    private List<string> spawnedEmptyEnemiesName = new List<string>();
+    private string[] allEmptyEnemies;
+    private string currentEmptyEnemy;
+    private int emptyIndexEnemy;
+    private List<string> spawnedEmptyPlayersName = new List<string>();
+    private string[] allEmptyPlayers;
+    private string currentEmptyPlayer;
+    private int emptyIndexPlayer;
 
     private GameObject powerUpPreview;
     private GameObject platformPreview;
     private GameObject enemiesPreview;
+    private GameObject playerPreview;
 
     private bool seePowerUpsPreview;
     private bool seePlatformPreview;
     private bool seeEnemiesPreview;
+    private bool seePlayerPreview;
 
     private bool getList;
     private bool getBool;
@@ -46,6 +60,9 @@ public class LevelConfigurationWindow : EditorWindow
     private AnimBool _animPlatform;
     private AnimBool _animPlatformAssign;
     private AnimBool _animEnemy;
+    private AnimBool _animEnemyAssign;
+    private AnimBool _animPlayer;
+    private AnimBool _animPlayerAssign;
 
     public static void OpenWindow()
     {
@@ -71,6 +88,12 @@ public class LevelConfigurationWindow : EditorWindow
         _animEnemy.valueChanged.AddListener(Repaint);
         _animPlatformAssign = new AnimBool(false);
         _animPlatformAssign.valueChanged.AddListener(Repaint);
+        _animEnemyAssign = new AnimBool(false);
+        _animEnemyAssign.valueChanged.AddListener(Repaint);
+        _animPlayer = new AnimBool(false);
+        _animPlayer.valueChanged.AddListener(Repaint);
+        _animPlayerAssign = new AnimBool(false);
+        _animPlayerAssign.valueChanged.AddListener(Repaint);
 
         _secondaryStyle = new GUIStyle()
         {
@@ -122,6 +145,12 @@ public class LevelConfigurationWindow : EditorWindow
             }
             EditorGUILayout.Space();
             EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Level Configuration", _style);
+            EditorGUILayout.Space();
+
+            DrawHerosParameters();
             DrawPowerUpsParameters();
             DrawPlatformParameters();
             DrawEnemiesParameters();
@@ -212,6 +241,40 @@ public class LevelConfigurationWindow : EditorWindow
                 }
                 spawnedEmptyPlatformsName = scriptable.emptyplatformsCreated;
             }
+            if (scriptable.emptyenemiesCreated.Count > 0)
+            {
+                List<string> names = new List<string>();
+                foreach (var name in scriptable.emptyenemiesCreated)
+                {
+                    var b = GameObject.Find(name);
+                    if (b == null)
+                    {
+                        names.Add(name);
+                    }
+                }
+                foreach (var item in names)
+                {
+                    scriptable.emptyenemiesCreated.Remove(item);
+                }
+                spawnedEmptyEnemiesName = scriptable.emptyenemiesCreated;
+            }
+            if (scriptable.emptyherosCreated.Count > 0)
+            {
+                List<string> names = new List<string>();
+                foreach (var name in scriptable.emptyherosCreated)
+                {
+                    var b = GameObject.Find(name);
+                    if (b == null)
+                    {
+                        names.Add(name);
+                    }
+                }
+                foreach (var item in names)
+                {
+                    scriptable.emptyherosCreated.Remove(item);
+                }
+                spawnedEmptyPlayersName = scriptable.emptyherosCreated;
+            }
         }
     }
 
@@ -297,6 +360,13 @@ public class LevelConfigurationWindow : EditorWindow
                     if (c)
                     {
                         GameObject a = scriptable.gameObjectsPreview[i];
+
+                        if (spawnedEmptyPlatformsName.Contains(a.name))
+                        {
+                            copies[4]++;
+                            a.name = "Platform (" + copies[4] + ")";
+                        }
+
                         PrefabUtility.InstantiatePrefab(a);
                         spawnedEmptyPlatformsName.Add(c.name);
                     }
@@ -309,9 +379,9 @@ public class LevelConfigurationWindow : EditorWindow
                         if (childComponent == null)
                         {
                             GetChild getChild = obj.AddComponent<GetChild>();
-                            if (powerUpPreview != null)
+                            if (platformPreview != null)
                             {
-                                getChild.spawn = powerUpPreview;
+                                getChild.spawn = platformPreview;
                             }
                             else
                             {
@@ -386,6 +456,7 @@ public class LevelConfigurationWindow : EditorWindow
             }
 
         }
+
         EditorGUILayout.EndFadeGroup();
         if (spawnedEmptyPlatformsName.Count > 0)
         {
@@ -476,7 +547,15 @@ public class LevelConfigurationWindow : EditorWindow
                     {
                         GameObject a = scriptable.gameObjectsPreview[i];
 
+                        if (spawnedEmptyEnemiesName.Contains(a.name))
+                        {
+                            copies[3]++;
+                            a.name = "Enemy (" + copies[3] + ")";
+                        }
+
                         PrefabUtility.InstantiatePrefab(a);
+
+                        spawnedEmptyEnemiesName.Add(a.name);
                     }
 
                 }
@@ -487,9 +566,18 @@ public class LevelConfigurationWindow : EditorWindow
                         var childComponent = obj.GetComponent<GetChild>();
                         if (childComponent == null)
                         {
-                            obj.AddComponent<GetChild>();
+                            GetChild getChild = obj.AddComponent<GetChild>();
+                            if (enemiesPreview != null)
+                            {
+                                getChild.spawn = enemiesPreview;
+                            }
+                            else
+                            {
+                                getChild.spawn = new GameObject();
+                            }
                         }
                     }
+
                 }
             }
 
@@ -497,15 +585,265 @@ public class LevelConfigurationWindow : EditorWindow
 
         EditorGUILayout.EndFadeGroup();
         EditorGUILayout.Space();
+
+        _animEnemyAssign.target = EditorGUILayout.Toggle("Assign Object", _animEnemyAssign.target);
+
+        if (EditorGUILayout.BeginFadeGroup(_animEnemyAssign.faded))
+        {
+            var previousColor = GUI.backgroundColor;
+
+            if (enemy == null)
+            {
+                GUI.backgroundColor = new Color(255, 0, 0, 0.4f);
+            }
+
+            enemy = (GameObject)EditorGUILayout.ObjectField("Enemy Asset", enemy, typeof(GameObject), false, GUILayout.Width(400));
+
+            EditorGUILayout.Space();
+
+            GUI.backgroundColor = previousColor;
+            if (enemy != null)
+            {
+                allEmptyEnemies = spawnedEmptyEnemiesName.ToArray();
+                if (allEmptyEnemies.Length > 0)
+                {
+                    emptyIndexEnemy = EditorGUILayout.Popup("Select From Spawned", emptyIndexEnemy, allEmptyEnemies);
+                    currentEmptyEnemy = allEmptyEnemies[emptyIndexEnemy];
+
+                    EditorGUILayout.Space();
+
+                    if (enemyName == null)
+                    {
+                        enemyName = enemy.name;
+                    }
+                    enemyName = EditorGUILayout.TextField("Name", enemyName);
+
+                    EditorGUILayout.Space();
+
+                    EditorGUILayout.BeginHorizontal();
+
+                    EditorGUILayout.LabelField("Spawn Asset in: " + currentEmptyEnemy);
+
+                    EditorGUILayout.Space();
+
+
+                    if (GUILayout.Button("Spawn"))
+                    {
+                        GameObject b = enemy;
+                        b.name = enemyName;
+                        b.transform.position = GameObject.Find(allEmptyEnemies[emptyIndexEnemy]).transform.position;
+                        PrefabUtility.InstantiatePrefab(b);
+                    }
+
+                    EditorGUILayout.EndHorizontal();
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No empty objects created", MessageType.Warning);
+                }
+
+
+            }
+
+        }
+        EditorGUILayout.EndFadeGroup();
+        if (spawnedEmptyEnemiesName.Count > 0)
+        {
+            scriptable.emptyenemiesCreated = spawnedEmptyEnemiesName;
+        }
+    }
+
+    private void DrawHerosParameters()
+    {
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField("Players", _secondaryStyle);
+        EditorGUILayout.Space();
+
+        seePlayerPreview = EditorGUILayout.Toggle("Set Preview", seePlayerPreview);
+
+        scriptable.previewPlayer = seePlayerPreview;
+
+        if (seePlayerPreview)
+        {
+            playerPreview = (GameObject)EditorGUILayout.ObjectField("Preview Object", playerPreview, typeof(GameObject), false);
+
+            if (playerPreview != null)
+            {
+                EditorGUILayout.Space();
+                if (GUILayout.Button("Set Preview"))
+                {
+                    foreach (GameObject obj in FindObjectsOfType(typeof(GameObject)))
+                    {
+                        if (obj.GetComponent<PlayerEmpty>())
+                        {
+                            var child = obj.GetComponent<GetChild>();
+                            child.child.SetActive(true);
+                            child.child.hideFlags = HideFlags.None;
+                            var childRend = obj.GetComponentInChildren<Renderer>();
+                            var childMesh = obj.GetComponentInChildren<MeshFilter>();
+
+                            if (childRend != null)
+                            {
+                                child.child.transform.localScale = playerPreview.transform.localScale;
+                                childMesh.sharedMesh = playerPreview.GetComponent<MeshFilter>().sharedMesh;
+
+                                var mat = new Material(Shader.Find("TransparencyShader"));
+                                mat.SetColor("_Color", Color.cyan);
+                                mat.SetFloat("_Opacity", 0.71f);
+                                mat.SetFloat("_Emission", -0.17f);
+
+                                childRend.sharedMaterial = mat;
+                                child.child.hideFlags = HideFlags.HideInHierarchy;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (GameObject obj in FindObjectsOfType(typeof(GameObject)))
+            {
+                if (obj.GetComponent<PlayerEmpty>())
+                {
+                    var child = obj.GetComponent<GetChild>();
+                    child.child.hideFlags = HideFlags.None;
+
+                    var childRend = obj.GetComponentInChildren<Renderer>();
+
+                    if (childRend != null)
+                    {
+                        childRend.gameObject.SetActive(false);
+                        child.child.hideFlags = HideFlags.HideInHierarchy;
+                    }
+                }
+            }
+        }
+        EditorGUILayout.Space();
+
+        _animPlayer.target = EditorGUILayout.Toggle("Use Empty Object", _animPlayer.target);
+
+        if (EditorGUILayout.BeginFadeGroup(_animPlayer.faded))
+        {
+            if (GUILayout.Button("SpawnPlayer", GUILayout.Width(200)))
+            {
+                for (int i = 0; i < scriptable.gameObjectsPreview.Count; i++)
+                {
+                    PlayerEmpty c = scriptable.gameObjectsPreview[i].GetComponent<PlayerEmpty>();
+
+                    if (c)
+                    {
+                        GameObject a = scriptable.gameObjectsPreview[i];
+
+                        if (spawnedEmptyPlayersName.Contains(a.name))
+                        {
+                            copies[5]++;
+                            a.name = "Player (" + copies[5] + ")";
+                        }
+
+                        PrefabUtility.InstantiatePrefab(a);
+
+                        spawnedEmptyPlayersName.Add(a.name);
+                    }
+
+                }
+                foreach (GameObject obj in FindObjectsOfType(typeof(GameObject)))
+                {
+                    if (obj.GetComponent<PlayerEmpty>())
+                    {
+                        var childComponent = obj.GetComponent<GetChild>();
+                        if (childComponent == null)
+                        {
+                            GetChild getChild = obj.AddComponent<GetChild>();
+                            if (playerPreview != null)
+                            {
+                                getChild.spawn = playerPreview;
+                            }
+                            else
+                            {
+                                getChild.spawn = new GameObject();
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        EditorGUILayout.EndFadeGroup();
+        EditorGUILayout.Space();
+
+        _animPlayerAssign.target = EditorGUILayout.Toggle("Assign Object", _animPlayerAssign.target);
+
+        if (EditorGUILayout.BeginFadeGroup(_animPlayerAssign.faded))
+        {
+            var previousColor = GUI.backgroundColor;
+
+            if (player == null)
+            {
+                GUI.backgroundColor = new Color(255, 0, 0, 0.4f);
+            }
+
+            player = (GameObject)EditorGUILayout.ObjectField("Player Asset", player, typeof(GameObject), false, GUILayout.Width(400));
+
+            EditorGUILayout.Space();
+
+            GUI.backgroundColor = previousColor;
+            if (player != null)
+            {
+                allEmptyPlayers = spawnedEmptyPlayersName.ToArray();
+                if (allEmptyPlayers.Length > 0)
+                {
+                    emptyIndexPlayer = EditorGUILayout.Popup("Select From Spawned", emptyIndexPlayer, allEmptyPlayers);
+                    currentEmptyPlayer = allEmptyPlayers[emptyIndexPlayer];
+
+                    EditorGUILayout.Space();
+
+                    if (playerName == null)
+                    {
+                        playerName = player.name;
+                    }
+                    playerName = EditorGUILayout.TextField("Name", playerName);
+
+                    EditorGUILayout.Space();
+
+                    EditorGUILayout.BeginHorizontal();
+
+                    EditorGUILayout.LabelField("Spawn Asset in: " + currentEmptyPlayer);
+
+                    EditorGUILayout.Space();
+
+
+                    if (GUILayout.Button("Spawn"))
+                    {
+                        GameObject b = player;
+                        b.name = playerName;
+                        b.transform.position = GameObject.Find(allEmptyPlayers[emptyIndexPlayer]).transform.position;
+                        PrefabUtility.InstantiatePrefab(b);
+                    }
+
+                    EditorGUILayout.EndHorizontal();
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No empty objects created", MessageType.Warning);
+                }
+
+
+            }
+
+        }
+        EditorGUILayout.EndFadeGroup();
+        if (spawnedEmptyPlayersName.Count > 0)
+        {
+            scriptable.emptyherosCreated = spawnedEmptyPlatformsName;
+        }
     }
 
     private void DrawPowerUpsParameters()
     {
-        EditorGUILayout.Space();
-
-        EditorGUILayout.LabelField("Level Configuration", _style);
-        EditorGUILayout.Space();
-
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("PowerUps", _secondaryStyle);
         EditorGUILayout.Space();
@@ -597,18 +935,18 @@ public class LevelConfigurationWindow : EditorWindow
                         {
                             if (currentPowerup == "Damage")
                             {
-                                powerUpsCopies[0]++;
-                                a.name = "PowerUp - " + currentPowerup + " (" + powerUpsCopies[0] + ")";
+                                copies[0]++;
+                                a.name = "PowerUp - " + currentPowerup + " (" + copies[0] + ")";
                             }
                             else if (currentPowerup == "Health")
                             {
-                                powerUpsCopies[1]++;
-                                a.name = "PowerUp - " + currentPowerup + " (" + powerUpsCopies[1] + ")";
+                                copies[1]++;
+                                a.name = "PowerUp - " + currentPowerup + " (" + copies[1] + ")";
                             }
                             else
                             {
-                                powerUpsCopies[2]++;
-                                a.name = "PowerUp - " + currentPowerup + " (" + powerUpsCopies[2] + ")";
+                                copies[2]++;
+                                a.name = "PowerUp - " + currentPowerup + " (" + copies[2] + ")";
                             }
                         }
                         PrefabUtility.InstantiatePrefab(a);
@@ -669,7 +1007,7 @@ public class LevelConfigurationWindow : EditorWindow
                     emptyIndex = EditorGUILayout.Popup("Select From Spawned", emptyIndex, allEmpty);
                     currentEmpty = allEmpty[emptyIndex];
 
-                    EditorGUILayout.Space();                 
+                    EditorGUILayout.Space();
 
                     if (powerUpName == null)
                     {
@@ -678,7 +1016,7 @@ public class LevelConfigurationWindow : EditorWindow
                     powerUpName = EditorGUILayout.TextField("Name", powerUpName);
 
                     EditorGUILayout.Space();
-                    
+
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("Spawn Asset in: " + currentEmpty);
 

@@ -25,6 +25,8 @@ public class GetChild : MonoBehaviour
             }
             child = b;
             b.hideFlags = HideFlags.HideInHierarchy;
+
+            DestroyImmediate(spawn);
         }
     }
 }

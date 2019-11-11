@@ -16,4 +16,5 @@ public class LevelConfigurationData : ScriptableObject
     public bool previewPowerUp;
     public bool previewPlatform;
     public bool previewEnemies;
+    public bool previewPlayer;
 }
