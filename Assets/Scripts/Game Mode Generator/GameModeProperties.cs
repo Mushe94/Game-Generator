@@ -32,7 +32,10 @@ public enum GameMode
 public enum ObjectivePlatformer
 {
     GetToPointB,
-    CollectCoins
+    CollectCoins,
+    BYTIME,
+    BYPOINTS,
+     BYKILLING
 }
 public enum ObjectiveEndless
 {

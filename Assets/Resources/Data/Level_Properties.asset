@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Level_Properties
   m_EditorClassIdentifier: 
   gm: 1
-  pers: 2
-  objEndless: 1
+  pers: 3
+  objEndless: 0
   objPlatform: 0
   objSurvival: 0
-  amountOfLevels: 4
+  amountOfLevels: 2
   limitTime: 0

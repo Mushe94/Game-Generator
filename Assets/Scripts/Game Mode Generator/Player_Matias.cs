@@ -18,21 +18,36 @@ public class Player_Matias : MonoBehaviour
     {
         if (manager.scriptable.pers == Perspective.side )
         {
-
-            if (Input.GetAxis("Horizontal") > 0)
+            if (manager.scriptable.gm != GameMode.endless)
             {
-                transform.position += transform.right * speed * Time.deltaTime;
+                if (Input.GetAxis("Horizontal") > 0)
+                {
+                    transform.position += transform.right * speed * Time.deltaTime;
 
+                }
+
+                if (Input.GetAxis("Horizontal") < 0)
+                {
+                    transform.position += -transform.right * speed * Time.deltaTime;
+                }
+
+                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+                {
+                    rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+                }
             }
-
-            if (Input.GetAxis("Horizontal") < 0)
+            else
             {
-                transform.position += -transform.right * speed * Time.deltaTime;
-            }
+                if (Input.GetAxis("Vertical") > 0)
+                {
+                    transform.position += transform.up * speed * Time.deltaTime;
 
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
-            {
-                rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+                }
+
+                if (Input.GetAxis("Vertical") < 0)
+                {
+                    transform.position += -transform.up * speed * Time.deltaTime;
+                }
             }
         }
 

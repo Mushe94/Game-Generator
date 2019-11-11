@@ -51,7 +51,9 @@ public class GameModeGeneratorWindow : EditorWindow
 
 	private void OnEnable()
   	{
-        myscenes = new List<SceneAsset>();
+        myscenes = new List<SceneAsset>(); //TEST, YO NO ME ENCARGO DE LAS ESCENAS
+
+        //GUISTYLES VARIOS
         titlestyle = new GUIStyle
         {
             fontSize = 20,
@@ -72,9 +74,12 @@ public class GameModeGeneratorWindow : EditorWindow
 			fontSize = 15,
 			fontStyle = FontStyle.Bold,
 			alignment = TextAnchor.MiddleCenter
-		};
+        };
+        //GUISTYLES VARIOS
 
-		survExample = (Texture2D)Resources.Load("Survival_Example");
+
+        //CARGO LAS IMAGENES DE LAS PREVIEWS
+        survExample = (Texture2D)Resources.Load("Survival_Example");
 		endlessExample = (Texture2D)Resources.Load("Endless_Example");
 		platExample = (Texture2D)Resources.Load("Platformer_Example");
 
@@ -82,19 +87,23 @@ public class GameModeGeneratorWindow : EditorWindow
 		tdEcample = (Texture2D)Resources.Load("TD_Example");
 		isoExample = (Texture2D)Resources.Load("Iso_Example");
 		sideExample = (Texture2D)Resources.Load("Side_Example");
+        //CARGO LAS IMAGENES DE LAS PREVIEWS
 
-		choseSurvival = false;
+        //SETEO FALSO TODOS LOS MODOS DE JUEGO
+        choseSurvival = false;
 		choseEndless = false;
 		chosePlatformer = false;
+        //SETEO FALSO TODOS LOS MODOS DE JUEGO
 
-		gameModePage = true;
+        //MI VENTANA TIENE DOS PAGINAS, UNA DONDE ELEGIS MODO DE JUEGO, OTRA DONDE ELEGIS SUS PROPIEDADES, DEPENDIENDO DEL MODO, EMPIEZA POR EL MODO DE JUEGO
+        gameModePage = true;
 		propertiesPage = false;
+        //MI VENTANA TIENE DOS PAGINAS, UNA DONDE ELEGIS MODO DE JUEGO, OTRA DONDE ELEGIS SUS PROPIEDADES, DEPENDIENDO DEL MODO, EMPIEZA POR EL MODO DE JUEGO
 
 
-        
-	}
+    }
 
-	public static void OpenWindow()
+    public static void OpenWindow()
 	{
         GameModeGeneratorWindow gameModeGeneratorWindow = GetWindow<GameModeGeneratorWindow>("Game Mode Generator", true);
         gameModeGeneratorWindow.minSize = new Vector2(400f, 500f);
@@ -143,7 +152,7 @@ public class GameModeGeneratorWindow : EditorWindow
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
 
-        if (chosePlatformer)
+        if (chosePlatformer) //SI ELIGIO PLATAFORMERO DIFERENTES OBJETIVOS PARA GANAR NIVEL
         {
             if (scriptable != null) scriptable.gm = GameMode.platform;
             else scriptable = CreateInstance<GameModeProperties>();
@@ -151,8 +160,8 @@ public class GameModeGeneratorWindow : EditorWindow
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            endLevelEnd = EditorGUILayout.Toggle("Collect Coins", endLevelEnd);
-            endLevelEnd = EditorGUILayout.Toggle("Get fom A point to B point", !endLevelEnd);
+            endLevelEnd = EditorGUILayout.Toggle("Collect Coins", endLevelEnd);//GANAR COLECTANDO MONEDAS
+            endLevelEnd = EditorGUILayout.Toggle("Get fom A point to B point", !endLevelEnd);//GANAR LLEGANDO AL OTRO PUNTO
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
@@ -164,12 +173,12 @@ public class GameModeGeneratorWindow : EditorWindow
 
             howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
-            if (endLevelEnd)
+            if (endLevelEnd) //GANAR LLEGANDO AL OTRO PUNTO
             {
                 selectedObj = "Win by Finishing Level";
                 scriptable.objPlatform = ObjectivePlatformer.GetToPointB;
             }
-            if (!endLevelEnd)
+            if (!endLevelEnd)//GANAR COLECTANDO MONEDAS
             {
                 selectedObj = "Collect Coins";
                 scriptable.objPlatform = ObjectivePlatformer.CollectCoins;
@@ -177,18 +186,18 @@ public class GameModeGeneratorWindow : EditorWindow
 
 		}
 
-		if (choseSurvival)
-		{
+		if (choseSurvival) //SI ELIGIO SURVIVAL DIFERENTES OBJETIVOS PARA GANAR NIVEL
+        {
             if (scriptable != null) scriptable.gm = GameMode.survival;
             else scriptable = CreateInstance<GameModeProperties>();
             EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
-			survTime = EditorGUILayout.Toggle("Kill Everyone", survTime);
-			survTime = EditorGUILayout.Toggle("Survive at a giving Time", !survTime);
+			survTime = EditorGUILayout.Toggle("Kill Everyone", survTime);//GANA MATANDO A CIERTA CANTIDAD DE ENMIES
+            survTime = EditorGUILayout.Toggle("Survive at a giving Time", !survTime);// GANA SOBREVIVIENDO UN TIEMPO
 
-			EditorGUILayout.Space();
+            EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
 			EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
@@ -198,15 +207,15 @@ public class GameModeGeneratorWindow : EditorWindow
 
 			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
-            if (survTime)
+            if (survTime) // GANA SOBREVIVIENDO UN TIEMPO
             {
                 selectedObj = "Win surviving at a giving time";
-                scriptable.objSurvival = ObjectiveSurvival.BYTIME;
+                scriptable.objPlatform = ObjectivePlatformer.BYTIME;
             }
-            if (!survTime)
+            if (!survTime)//GANA MATANDO A CIERTA CANTIDAD DE ENMIES
             {
                 selectedObj = "Win Killing everyone";
-                scriptable.objSurvival = ObjectiveSurvival.BYKILLING;
+                scriptable.objPlatform = ObjectivePlatformer.BYKILLING;
             }
 
             
@@ -221,8 +230,8 @@ public class GameModeGeneratorWindow : EditorWindow
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
-			killEveryOnePlat = EditorGUILayout.Toggle("Based on Time", killEveryOnePlat);
-			killEveryOnePlat = EditorGUILayout.Toggle("Based on Points", !killEveryOnePlat);
+			killEveryOnePlat = EditorGUILayout.Toggle("Based on Time", killEveryOnePlat);// GANA SOBREVIVIENDO UN TIEMPO
+            killEveryOnePlat = EditorGUILayout.Toggle("Based on Points", !killEveryOnePlat); //GANA CONSIGUIENDO PUNTOS
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
@@ -236,46 +245,50 @@ public class GameModeGeneratorWindow : EditorWindow
 
             if (!killEveryOnePlat)
             {
-                selectedObj = "Based on Time";
-                scriptable.objEndless = ObjectiveEndless.BYTIME;
+                selectedObj = "Based on Time";// GANA SOBREVIVIENDO UN TIEMPO
+                scriptable.objPlatform = ObjectivePlatformer.BYTIME;
             }
             if (killEveryOnePlat)
             {
-                selectedObj = "Based on Points";
-                scriptable.objEndless = ObjectiveEndless.BYPOINTS;
+                selectedObj = "Based on Points";// GANA CONSIGUIENDO PUNTOS
+                scriptable.objPlatform = ObjectivePlatformer.BYPOINTS;
             }
    
         }
+
+        //LO SELECCIONADO SE GUARDA EN UN ENUM QUE ES "GAMEMODE" y "PERSPECTIVE"
 	}
 
 	void CreateScriptable()
 	{
+        //ACA TE TIRA UN CARTEL DE UNITY QUE NO TE DEJA HACER NADA
 		if (EditorUtility.DisplayDialog("Attention", "Is this information ok? " + "\n" + "\n" + selectedPers + "\n" + selectedMode + "\n" + selectedObj + "\n" + "LEVELS: " + howManyLevels, "Yes", "No"))
 		{
 
-			if(scriptable == null) scriptable = CreateInstance<GameModeProperties>();
+			if(scriptable == null) scriptable = CreateInstance<GameModeProperties>(); //SI NO SE CREO ANTES, SE CREA AHORA EL SCRIPTABLEOBJ
 
             scriptable.amountOfLevels = howManyLevels;
 
-            if (!AssetDatabase.IsValidFolder("Assets/Resources/Data"))
+            if (!AssetDatabase.IsValidFolder("Assets/Resources/Data")) 
             {
                 AssetDatabase.CreateFolder("Assets/Resources", "Data");
                 Debug.Log("The introduced folder doesn't exist, so I just created a default one for you.");
                 AssetDatabase.Refresh();
         
             }
-            var path = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Data/Game Mode Properties/Level_Properties.asset");
+            var path = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/Data/Game Mode Properties/Level_Properties.asset"); //SE CREA UN PATH DONDE GUARDAR EL SCRIPTABLE
 
              
 
 			gameModePage = true;
-			propertiesPage = false;
-            AssetDatabase.CreateAsset(scriptable, path);
+			propertiesPage = false; //SE VUELVE A LA PAGINA DONDE SE ELIGE EL GAMEMODE
+            AssetDatabase.CreateAsset(scriptable, path); //SE PONE EL SCRIPTABLE EN EL PATH
 
 
-            for (int i = 0; i < howManyLevels; i++)
+            for (int i = 0; i < howManyLevels; i++) //ACA SE CREAN LAS ESCENAS DEPENDIENDO LA PERSPECTIVA CON EL NOMBRE LEVEL0
             {
-                if(scriptable.pers == Perspective.side) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestSide.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+                if(scriptable.pers == Perspective.side && scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessSide.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestSide.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
                 if(scriptable.pers == Perspective.top) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
                 if(scriptable.pers == Perspective.third) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
                 if(scriptable.pers == Perspective.iso) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
@@ -283,25 +296,25 @@ public class GameModeGeneratorWindow : EditorWindow
             }
 			AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            EditorSceneManager.OpenScene("Assets/Resources/Prefabs/Level0.unity");
+            EditorSceneManager.OpenScene("Assets/Resources/Prefabs/Level0.unity"); //SE ABRE EL PRIMER NIVEL
 
            
 
-            var manager = FindObjectOfType<GameManager>();
-            manager.scriptable = scriptable;
+            var manager = FindObjectOfType<GameManager>();// SETEO LOS VALORES DEL MANAGER DEL NUEVO NIVEL
+            manager.scriptable = scriptable; 
             manager.myscenes = new UnityEngine.SceneManagement.Scene[howManyLevels];
             manager.amountScenes = howManyLevels;
-            for (int i = 0; i < howManyLevels; i++)
+            for (int i = 0; i < howManyLevels; i++)  //ACA QUISE CONSEGUIR TODAS LAS ESCENAS CREADAS Y GUARDARLAS EN UNA VARIABLE EN EL MANAGER DEL NIVEL
             {
                 manager.myscenes[i] = UnityEngine.SceneManagement.SceneManager.GetSceneByPath("Assets/Resources/Prefabs/Level" + i + ".unity");
             }
-            scriptable = null;
+            scriptable = null; //EL SCRIPTABLE DE LA VENTANA SE HACE NULL, Y SE VA A CREAR UNA DE CERO
 		}
 	}
    
 	void ChooseTypeOfGame()
 	{
-
+        //ME CANSE DE HACER COMENTARIOS
 
 		EditorGUILayout.LabelField("Game Mode: ", subtitlestyle);
 		EditorGUILayout.Space();

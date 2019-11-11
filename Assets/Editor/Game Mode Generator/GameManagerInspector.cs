@@ -64,7 +64,7 @@ public class GameManagerInspector : Editor
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Amount Of Enemies In This Level",subtitlestyle);
-        _target.enemies = EditorGUILayout.IntField(_target.enemies);
+        _target.amountofEnemies = EditorGUILayout.IntField(_target.amountofEnemies);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();

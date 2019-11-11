@@ -12,13 +12,25 @@ public class Enemy_Matias : MonoBehaviour
     {
         player = FindObjectOfType<Player_Matias>();
         manager = FindObjectOfType<GameManager>();
-        transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
+        //transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
+        if (manager.scriptable.objPlatform != ObjectivePlatformer.BYKILLING)
+        {
+        manager.enemies++;
+        }
+       
     }
     private void Update()
     {
-        var dir = player.transform.position - transform.position;
-        var newdir = new Vector3(dir.x, transform.position.y, dir.z);
-        transform.position += newdir.normalized * speed * Time.deltaTime;
+        if (manager.scriptable.gm != GameMode.endless)
+        {
+            var dir = player.transform.position - transform.position;
+            var newdir = new Vector3(dir.x, transform.position.y, dir.z);
+            transform.position += newdir.normalized * speed * Time.deltaTime;
+        }
+        else
+        {
+            transform.position += -transform.right * speed * Time.deltaTime;
+        }
 
     }
     private void LateUpdate()
@@ -31,7 +43,7 @@ public class Enemy_Matias : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.layer == 10)
+        if(collision.gameObject.layer == 20)
         {
             life--;
         }
