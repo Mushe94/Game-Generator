@@ -9,6 +9,9 @@ public class LevelConfigurationData : ScriptableObject
     public List<GameObject> gameObjectsPreview;
 
     public List<string> emptyCreated = new List<string>();
+    public List<string> emptyplatformsCreated = new List<string>();
+    public List<string> emptyenemiesCreated = new List<string>();
+    public List<string> emptyherosCreated = new List<string>();
 
     public bool previewPowerUp;
     public bool previewPlatform;
