@@ -296,16 +296,19 @@ public class GameModeGeneratorWindow : EditorWindow
                 if (scriptable.pers == Perspective.top)
                 {
                     if (scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
-                     else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                     else if(scriptable.gm == GameMode.platform) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestPlatTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
                 }
                 if (scriptable.pers == Perspective.third)
                 {
                     if (scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else if (scriptable.gm == GameMode.platform) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestPlatTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
                     else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
                 }
                 if (scriptable.pers == Perspective.iso)
                 {
                     if (scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else if (scriptable.gm == GameMode.platform) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestPlatTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
                     else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
                 }
               

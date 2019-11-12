@@ -144,6 +144,8 @@ MonoBehaviour:
   myplayer: {fileID: 1381818980}
   scriptable: {fileID: 0}
   mycam: {fileID: 1970940709}
+  objCoins: {fileID: 0}
+  objPlatform: {fileID: 0}
   smoothSpped: 0.1
   enemies: 3
   timeText: {fileID: 1846696461}
@@ -154,7 +156,7 @@ MonoBehaviour:
   amountofEnemies: 0
   myscenes: []
   amountScenes: 0
-  enemyOBJ: {fileID: 6470724347231135106, guid: fa4546a1abf916c468f9328dbecf8819,
+  enemyOBJ: {fileID: 6470724347231135106, guid: 6060855400b867e409810fa101a04075,
     type: 3}
   instanceTimer: 0
   enemyInstanceEndlessTime: 1
@@ -165,6 +167,7 @@ MonoBehaviour:
   - {fileID: 1919492370}
   - {fileID: 837366942}
   - {fileID: 455585181}
+  levelFinished: 0
 --- !u!4 &441116498
 Transform:
   m_ObjectHideFlags: 0
