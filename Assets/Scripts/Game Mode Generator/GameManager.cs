@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     public Player_Matias myplayer;
     public GameModeProperties scriptable;
     public Camera mycam;
+    
+    public GameObject objCoins;
+    public GameObject objPlatform;
      Vector3 offset;
     public float smoothSpped;
      float currentY;
@@ -21,7 +24,9 @@ public class GameManager : MonoBehaviour
 
     public Text timeText;
     public Text killsText;
+    public Text pointsText;
 
+    public int points; //IMPORTANTE, TIENE QUE CHOCAR CON LAYER 21 PARA SUMAR PUNTOS
     private float timer;
     public float amountOfTime;
     public int amountofEnemies;
@@ -34,7 +39,7 @@ public class GameManager : MonoBehaviour
     public Transform[] instanceEndless;
     private float instanceTimerEndless;
 
-    private bool levelFinished; //CON ESTE BOOL SABES SI YA TERMINO EL NIVEL Y GANO;
+    public bool levelFinished; //CON ESTE BOOL SABES SI YA TERMINO EL NIVEL Y GANO;
 
 
 
@@ -42,7 +47,7 @@ public class GameManager : MonoBehaviour
     {
         
         levelFinished = false;
-        if (scriptable.objPlatform == ObjectivePlatformer.BYTIME) // SI EL OBJTIVO ES POR TIEMPO
+        if (scriptable.objPlatform == ObjectivePlatformer.BYTIME && scriptable.gm != GameMode.endless) // SI EL OBJTIVO ES POR TIEMPO
         {
            
         timer = amountOfTime;
@@ -51,6 +56,15 @@ public class GameManager : MonoBehaviour
         else
         {
             timer = 0;
+        }
+
+        if(scriptable.objPlatform == ObjectivePlatformer.CollectCoins)
+        {
+            objPlatform.SetActive(false);
+        }
+        else if(scriptable.objPlatform == ObjectivePlatformer.GetToPointB)
+        {
+            objCoins.SetActive(false);
         }
 
         if (scriptable.objPlatform == ObjectivePlatformer.BYKILLING)
@@ -119,7 +133,7 @@ public class GameManager : MonoBehaviour
         //MOUSE CONFIG
 
         //SI EL OBJETIVO ES POR TIEMPO, TIMER--, Y SI LLEGA A 0, GANA, SINO VA A SEGUIR SUMANDO TIEMPO
-        if(scriptable.objPlatform == ObjectivePlatformer.BYTIME)
+        if(scriptable.objPlatform == ObjectivePlatformer.BYTIME && scriptable.gm != GameMode.endless)
         {
             if(!levelFinished) timer -= Time.deltaTime;
             if (timer <= 0)
@@ -127,14 +141,18 @@ public class GameManager : MonoBehaviour
                 timeText.text = "WIN";
                 levelFinished = true; //nivel terminado
             }
+            timeText.text = Mathf.FloorToInt(timer) + "";
         }
-        else
+        else if (!levelFinished && scriptable.objPlatform != ObjectivePlatformer.BYPOINTS)
         {
-            if(!levelFinished) timer += Time.deltaTime;
+            timer += Time.deltaTime;
+            timeText.text = Mathf.FloorToInt(timer) + ""; //TIMER TEXT EN CANVAS
+        
+       
         }
         // SI EL OBJETIVO ES POR TIEMPO, TIMER--, Y SI LLEGA A 0, GANA, SINO VA A SEGUIR SUMANDO TIEMPO
 
-
+        //si el objetivo es matar
         if(scriptable.objPlatform == ObjectivePlatformer.BYKILLING)
         {
             killsText.text = enemies + "";
@@ -145,11 +163,14 @@ public class GameManager : MonoBehaviour
                 timeText.text = "WIN";
             }
         }
+        //si el objetivo es matar
 
-        if(scriptable.gm == GameMode.endless && scriptable.pers == Perspective.side)
+        //si es endless
+        if (scriptable.gm == GameMode.endless )
         {
             Endless();
         }
+        //si es endless
 
         //SI EL MODO DE JUEGO ES SURVIVAL VA A INSTANCEAR ENEMIGOS EN RANDOM PLACES DEPENDIENDO DEL AMOUNTOFTIME Y AMOUNTOFENEMIES
         if (scriptable.gm == GameMode.survival)
@@ -158,17 +179,26 @@ public class GameManager : MonoBehaviour
             instanceTimer += Time.deltaTime;
             if(instanceTimer>=timeToInstance)
             {
-                var rndm = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
-                instanceTimer = 0;
-                if(scriptable.pers == Perspective.top || scriptable.pers == Perspective.iso|| scriptable.pers == Perspective.third)
+                if (scriptable.pers == Perspective.top || scriptable.pers == Perspective.iso || scriptable.pers == Perspective.third)
                 {
+                    var rndm= new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
                     Instantiate(enemyOBJ, rndm, transform.rotation);
                 }
+                else
+                {
+                    var rndm = new Vector3(Random.Range(-10, 30), 0, 0);
+                    Instantiate(enemyOBJ, rndm, transform.rotation);
+                }
+                
+
+                instanceTimer = 0;
+               
+                
             }
         }
         //SI EL MODO DE JUEGO ES SURVIVAL VA A INSTANCEAR ENEMIGOS EN RANDOM PLACES DEPENDIENDO DEL AMOUNTOFTIME Y AMOUNTOFENEMIES
 
-        timeText.text = timer+ ""; //TIMER TEXT EN CANVAS
+        
     }
 
     void Endless()
@@ -176,10 +206,17 @@ public class GameManager : MonoBehaviour
         if(!levelFinished) instanceTimerEndless += Time.deltaTime;
         if(instanceTimerEndless>=enemyInstanceEndlessTime)
         {
-            Instantiate(enemyOBJ, instanceEndless[Random.Range(0, 3)].position, transform.rotation);
+            Instantiate(enemyOBJ, instanceEndless[Random.Range(0, instanceEndless.Length)].position, transform.rotation);
             instanceTimerEndless = 0;
         }
+
+        if(scriptable.objPlatform == ObjectivePlatformer.BYPOINTS)
+        {
+            timeText.text = points + "";
+        }
     }
+
+    
 
     IEnumerator LoadmyScene()
     {

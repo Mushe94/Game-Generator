@@ -13,6 +13,7 @@ public class Player_Matias : MonoBehaviour
     {
         manager = FindObjectOfType<GameManager>();
         rb = GetComponent<Rigidbody2D>();
+      
     }
     private void Update()
     {
@@ -80,33 +81,49 @@ public class Player_Matias : MonoBehaviour
 
         if (manager.scriptable.pers == Perspective.third)
         {
-            if (Input.GetAxis("Horizontal") > 0)
-            {
-                var dir = new Vector3(manager.mycam.transform.right.x, transform.position.y, manager.mycam.transform.right.z);
-                transform.position += dir * speed * Time.deltaTime;
+            float hor = Input.GetAxis("Horizontal");
+            float ver = Input.GetAxis("Vertical");
+            Vector3 camF = Camera.main.transform.forward;
+            Vector3 camH = Camera.main.transform.right;
+            camF.y = 0;
+            camH.y = 0;
+            camF = camF.normalized;
+            camH = camH.normalized;
+
+            Vector3 playermovement = (hor * camH + ver * camF).normalized * speed * Time.deltaTime;
+
+            transform.position += playermovement;
+
+            if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
+            {  
+                transform.forward = playermovement;
             }
 
-            if (Input.GetAxis("Horizontal") < 0)
-            {
-                var dir = new Vector3(manager.mycam.transform.right.x, transform.position.y, manager.mycam.transform.right.z);
-                transform.position += -dir * speed * Time.deltaTime;
-            }
-
-            if (Input.GetAxis("Vertical") > 0)
-            {
-                var dir = new Vector3(manager.mycam.transform.forward.x, transform.position.y, manager.mycam.transform.forward.z);
-                transform.position +=dir * speed * Time.deltaTime;
-                
-            }
-            if (Input.GetAxis("Vertical") < 0)
-            {
-                var dir = new Vector3(manager.mycam.transform.forward.x, transform.position.y, manager.mycam.transform.forward.z);
-                transform.position += -dir * speed * Time.deltaTime;
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && manager.scriptable.gm != GameMode.endless)
             {
                 rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
             }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.layer ==21)
+        {
+            manager.points++;
+            print("puntos");
+        }
+        if(collision.gameObject.layer == 22) //la layer 22 es el objetivo en el modo plataforma
+        {
+            manager.levelFinished = true; //si la toca, gana
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == 21)
+        {
+            manager.points++;
+            print("puntos");
         }
     }
 }

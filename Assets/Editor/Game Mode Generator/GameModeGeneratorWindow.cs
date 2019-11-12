@@ -287,11 +287,27 @@ public class GameModeGeneratorWindow : EditorWindow
 
             for (int i = 0; i < howManyLevels; i++) //ACA SE CREAN LAS ESCENAS DEPENDIENDO LA PERSPECTIVA CON EL NOMBRE LEVEL0
             {
-                if(scriptable.pers == Perspective.side && scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessSide.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
-                else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestSide.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
-                if(scriptable.pers == Perspective.top) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
-                if(scriptable.pers == Perspective.third) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
-                if(scriptable.pers == Perspective.iso) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" +i + ".unity");
+                if (scriptable.pers == Perspective.side)
+                {
+                    if(scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessSide.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else if(scriptable.gm == GameMode.platform) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestPlatSide.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestSurSide.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                }
+                if (scriptable.pers == Perspective.top)
+                {
+                    if (scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                     else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                }
+                if (scriptable.pers == Perspective.third)
+                {
+                    if (scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                }
+                if (scriptable.pers == Perspective.iso)
+                {
+                    if (scriptable.gm == GameMode.endless) AssetDatabase.CopyAsset("Assets/Scenes/MatiTestEndlessTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                    else AssetDatabase.CopyAsset("Assets/Scenes/MatiTestTop.unity", "Assets/Resources/Prefabs/Level" + i + ".unity");
+                }
               
             }
 			AssetDatabase.SaveAssets();
@@ -301,7 +317,16 @@ public class GameModeGeneratorWindow : EditorWindow
            
 
             var manager = FindObjectOfType<GameManager>();// SETEO LOS VALORES DEL MANAGER DEL NUEVO NIVEL
-            manager.scriptable = scriptable; 
+            manager.scriptable = scriptable;
+            if (scriptable.objPlatform == ObjectivePlatformer.CollectCoins)
+            {
+                manager.objPlatform.SetActive(false);
+            }
+            else if (scriptable.objPlatform == ObjectivePlatformer.GetToPointB)
+            {
+                manager.objPlatform.SetActive(false);
+            }
+
             manager.myscenes = new UnityEngine.SceneManagement.Scene[howManyLevels];
             manager.amountScenes = howManyLevels;
             for (int i = 0; i < howManyLevels; i++)  //ACA QUISE CONSEGUIR TODAS LAS ESCENAS CREADAS Y GUARDARLAS EN UNA VARIABLE EN EL MANAGER DEL NIVEL
