@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -25,6 +24,7 @@ public class GameManager : MonoBehaviour
     public Text timeText;
     public Text killsText;
     public Text pointsText;
+	public Text loseText;
 
     public int points; //IMPORTANTE, TIENE QUE CHOCAR CON LAYER 21 PARA SUMAR PUNTOS
     private float timer;
@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
         //si el objetivo es matar
 
         //si es endless
-        if (scriptable.gm == GameMode.endless )
+        if (scriptable.gm == GameMode.endless)
         {
             Endless();
         }
@@ -198,7 +198,17 @@ public class GameManager : MonoBehaviour
         }
         //SI EL MODO DE JUEGO ES SURVIVAL VA A INSTANCEAR ENEMIGOS EN RANDOM PLACES DEPENDIENDO DEL AMOUNTOFTIME Y AMOUNTOFENEMIES
 
-        
+        if (levelFinished)
+		{
+			if (SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
+			{
+				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+			} else
+			{
+				loseText.gameObject.SetActive(true);
+				loseText.text = "Victory!";
+			}
+		}
     }
 
     void Endless()
@@ -215,6 +225,18 @@ public class GameManager : MonoBehaviour
             timeText.text = points + "";
         }
     }
+
+	public void Lose()
+	{
+		StartCoroutine(LoseSequence());
+	}
+	
+	private IEnumerator LoseSequence()
+	{
+		loseText.gameObject.SetActive(true);
+		yield return new WaitForSeconds(2f);
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+	}
 
     
 

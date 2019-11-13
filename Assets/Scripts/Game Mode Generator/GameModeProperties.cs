@@ -2,10 +2,6 @@
 
 public class GameModeProperties : ScriptableObject
 {
-   
-
-
-    
     public GameMode gm;
     public Perspective pers;
     public ObjectiveEndless objEndless;

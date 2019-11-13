@@ -108,16 +108,22 @@ public class Player_Matias : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.layer ==21)
+		if (collision.gameObject.layer == 20)
+		{
+			manager.Lose();
+		}
+
+        if (collision.gameObject.layer ==21)
         {
             manager.points++;
             print("puntos");
         }
-        if(collision.gameObject.layer == 22) //la layer 22 es el objetivo en el modo plataforma
+        if (collision.gameObject.layer == 22) //la layer 22 es el objetivo en el modo plataforma
         {
             manager.levelFinished = true; //si la toca, gana
         }
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == 21)
