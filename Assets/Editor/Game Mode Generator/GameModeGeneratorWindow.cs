@@ -236,12 +236,12 @@ public class GameModeGeneratorWindow : EditorWindow
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
 
-			//EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+			EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
 
-			//EditorGUILayout.Space();
-			//EditorGUILayout.Space();
+			EditorGUILayout.Space();
+			EditorGUILayout.Space();
 
-			//howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
+			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
             if (!killEveryOnePlat)
             {
