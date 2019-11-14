@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class ShootAttack : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject prefab;
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+           var e= Instantiate(prefab, transform.position + transform.forward, transform.rotation);
+           var b= e.GetComponent<Bullet>();
+            b.dir = transform.forward;
+        }
     }
 }

@@ -52,7 +52,7 @@ public class PlayerGeneratorWindow : EditorWindow
             playerScriptable.HorizontalMovement = EditorGUILayout.Toggle("Horizontal Movement", playerScriptable.HorizontalMovement);
 
             playerScriptable.MeleAttack = EditorGUILayout.Toggle("Melee Attack", playerScriptable.MeleAttack);
-
+            playerScriptable.RangeAttack = EditorGUILayout.Toggle("Range Attack", playerScriptable.RangeAttack);
             if (!playerScriptable.VerticalMovement)
             {
 

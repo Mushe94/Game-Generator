@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4747757568056145466}
   - component: {fileID: 1068870200719717781}
   - component: {fileID: 773794979810798692}
-  m_Layer: 11
+  m_Layer: 20
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 6809841061906521605}
   - component: {fileID: 3598369768651462835}
   - component: {fileID: 7259221430944589387}
-  m_Layer: 11
+  m_Layer: 20
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,8 +299,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5867308164048727444}
   - component: {fileID: 7084533731293097297}
-  m_Layer: 0
-  m_Name: SuperSavageSworld
+  - component: {fileID: 4371573462046279199}
+  m_Layer: 20
+  m_Name: SSS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -340,3 +341,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4371573462046279199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6821396574524110848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9226789fe85f1245a666cd0f538b13c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

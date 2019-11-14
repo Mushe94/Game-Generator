@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2812718367230451195}
   - component: {fileID: 2812718367230451192}
   - component: {fileID: 2812718367230451193}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MatiEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
