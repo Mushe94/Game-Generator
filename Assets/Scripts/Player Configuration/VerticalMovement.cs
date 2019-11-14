@@ -5,6 +5,21 @@ using UnityEngine;
 public class VerticalMovement : MonoBehaviour
 {
     private Player pl;
+    private bool MoveOnZ;
+    private void Awake()
+    {
+        var g = GameObject.Find("Manager").GetComponent<GameManager>();
+        if (g != null)
+        {
+
+            if (g.scriptable.pers != Perspective.side)
+            {
+                MoveOnZ = true;
+                gameObject.AddComponent<Jump>();
+            }
+          
+        }
+    }
     private void Start()
     {
         pl = gameObject.GetComponent<Player>();
@@ -15,13 +30,29 @@ public class VerticalMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += Vector3.up*pl.speed;
-            
+            if (MoveOnZ)
+            {
+                transform.position += Vector3.forward * pl.speed * Time.deltaTime;
+            }
+            else
+            {
+                transform.position += Vector3.up * pl.speed * Time.deltaTime;
+
+            }
+
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position += Vector3.down*pl.speed;
+            if (MoveOnZ)
+            {
+                transform.position += Vector3.back * pl.speed * Time.deltaTime;
+            }
+            else
+            {
+                transform.position += Vector3.down * pl.speed * Time.deltaTime;
+
+            }
         }
     }
 }

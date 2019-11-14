@@ -10,10 +10,15 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time>5)
+        time += Time.deltaTime;
+        if (time>5)
         {
             Destroy(gameObject);
         }
         transform.position += speed * dir * Time.deltaTime;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(gameObject);
     }
 }

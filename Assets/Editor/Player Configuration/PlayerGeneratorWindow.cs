@@ -99,7 +99,7 @@ public class PlayerGeneratorWindow : EditorWindow
         }
         else
         {
-            if (GUILayout.Button("Save Scriptable Player"))
+            if (GUILayout.Button("Create New Scriptable Player"))
             {
                 EditNewPlayer();
             }
