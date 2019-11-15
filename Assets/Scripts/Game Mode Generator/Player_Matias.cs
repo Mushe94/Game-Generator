@@ -131,5 +131,10 @@ public class Player_Matias : MonoBehaviour
             manager.points++;
             print("puntos");
         }
+        if (collision.gameObject.layer == 20)
+        {
+            manager.Lose();
+        }
+
     }
 }

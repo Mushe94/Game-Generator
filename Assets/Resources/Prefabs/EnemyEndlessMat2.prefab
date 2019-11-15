@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7724011669650168263}
   - component: {fileID: 5145624050123821797}
   - component: {fileID: 288708896263622996}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: EnemyEndlessMat2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

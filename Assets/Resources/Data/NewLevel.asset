@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06ef4c1698e1b804d93af5751b5193fd, type: 3}
-  m_Name: LevelConfigurationData 5
+  m_Name: NewLevel
   m_EditorClassIdentifier: 
   gameObjectsPreview: []
   emptyCreated: []
+  emptyplatformsCreated: []
+  emptyenemiesCreated: []
+  emptyherosCreated: []
   previewPowerUp: 0
   previewPlatform: 0
   previewEnemies: 0
+  previewPlayer: 0

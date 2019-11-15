@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameObjectsPreview: []
   emptyCreated: []
+  emptyplatformsCreated: []
+  emptyenemiesCreated: []
+  emptyherosCreated: []
   previewPowerUp: 0
   previewPlatform: 0
   previewEnemies: 0
+  previewPlayer: 0

@@ -8,6 +8,7 @@ using Object = UnityEngine.Object;
 public class GameModeGeneratorWindow : EditorWindow
 {
 	GUIStyle titlestyle;
+	
 	GUIStyle subtitlestyle;
 	GUIStyle choosestyle;
 
@@ -61,12 +62,13 @@ public class GameModeGeneratorWindow : EditorWindow
             alignment = TextAnchor.MiddleCenter
 
         };
+       
 
-		subtitlestyle = new GUIStyle
+        subtitlestyle = new GUIStyle
 		{
 			fontSize = 18,
 			fontStyle = FontStyle.Italic,
-			alignment = TextAnchor.MiddleLeft
+			alignment = TextAnchor.MiddleCenter
 		};
 
 		choosestyle = new GUIStyle
@@ -119,29 +121,32 @@ public class GameModeGeneratorWindow : EditorWindow
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			ChooseTypeOfGame();
-
-			EditorGUILayout.Space();
-			EditorGUILayout.Space();
-
-		
-
-			ChoosePerspective();
+            EditorGUILayout.LabelField("---------------------------------------------------------", titlestyle);
+            ChooseTypeOfGame();
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-			GotoProperties();
-		}
+            EditorGUILayout.LabelField("---------------------------------------------------------", titlestyle);
+
+
+            ChoosePerspective();
+
+			EditorGUILayout.Space();
+			EditorGUILayout.Space();
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            GotoProperties();
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+        }
 		if (propertiesPage)
 		{
 			PropertiesGame();
-
-			if (GUILayout.Button("Create Scriptable"))
+            EditorGUILayout.LabelField("------------------------------------------------------------", titlestyle);
+            if (GUILayout.Button("Create Scriptable"))
 			{
 				CreateScriptable();
 			}
-		}
+            EditorGUILayout.LabelField("-----------------------------------------------------------", titlestyle);
+        }
 	}
 
 
@@ -151,7 +156,7 @@ public class GameModeGeneratorWindow : EditorWindow
 
 		EditorGUILayout.Space();
 		EditorGUILayout.Space();
-
+        EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
         if (chosePlatformer) //SI ELIGIO PLATAFORMERO DIFERENTES OBJETIVOS PARA GANAR NIVEL
         {
             if (scriptable != null) scriptable.gm = GameMode.platform;
@@ -160,17 +165,20 @@ public class GameModeGeneratorWindow : EditorWindow
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+
             endLevelEnd = EditorGUILayout.Toggle("Collect Coins", endLevelEnd);//GANAR COLECTANDO MONEDAS
             endLevelEnd = EditorGUILayout.Toggle("Get fom A point to B point", !endLevelEnd);//GANAR LLEGANDO AL OTRO PUNTO
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
 
             EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
             howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
             if (endLevelEnd) //GANAR LLEGANDO AL OTRO PUNTO
@@ -193,19 +201,19 @@ public class GameModeGeneratorWindow : EditorWindow
             EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			survTime = EditorGUILayout.Toggle("Kill Everyone", survTime);//GANA MATANDO A CIERTA CANTIDAD DE ENMIES
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            survTime = EditorGUILayout.Toggle("Kill Everyone", survTime);//GANA MATANDO A CIERTA CANTIDAD DE ENMIES
             survTime = EditorGUILayout.Toggle("Survive at a giving Time", !survTime);// GANA SOBREVIVIENDO UN TIEMPO
 
             EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
             if (survTime) // GANA SOBREVIVIENDO UN TIEMPO
             {
@@ -229,19 +237,19 @@ public class GameModeGeneratorWindow : EditorWindow
             EditorGUILayout.LabelField("Choose Objective ", subtitlestyle);
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			killEveryOnePlat = EditorGUILayout.Toggle("Based on Time", killEveryOnePlat);// GANA SOBREVIVIENDO UN TIEMPO
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            killEveryOnePlat = EditorGUILayout.Toggle("Based on Time", killEveryOnePlat);// GANA SOBREVIVIENDO UN TIEMPO
             killEveryOnePlat = EditorGUILayout.Toggle("Based on Points", !killEveryOnePlat); //GANA CONSIGUIENDO PUNTOS
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            EditorGUILayout.LabelField("How many Levels?", subtitlestyle);
 
 			EditorGUILayout.Space();
 			EditorGUILayout.Space();
-
-			howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
+            EditorGUILayout.LabelField("----------------------------------------------------------", titlestyle);
+            howManyLevels = EditorGUILayout.IntField("Levels: ", howManyLevels);
 
             if (!killEveryOnePlat)
             {
@@ -336,6 +344,8 @@ public class GameModeGeneratorWindow : EditorWindow
             {
                 manager.myscenes[i] = UnityEngine.SceneManagement.SceneManager.GetSceneByPath("Assets/Resources/Prefabs/Level" + i + ".unity");
             }
+            PlayerGeneratorWindow.OpenWindow();
+
             scriptable = null; //EL SCRIPTABLE DE LA VENTANA SE HACE NULL, Y SE VA A CREAR UNA DE CERO
 		}
 	}

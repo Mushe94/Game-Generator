@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5999269480566919437}
   - component: {fileID: 7724011669650168263}
   - component: {fileID: 1358444849941216933}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: EnemyEndlessMati
   m_TagString: Untagged
   m_Icon: {fileID: 0}
